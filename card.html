@@ -60,6 +60,7 @@
             printWin.document.body.appendChild(printCard);
 
             printWin.print();
+            printWin.close();
         }
         async function loadData(){
             let data = await fetch("https://dev.wit.la/api/openconductores")
