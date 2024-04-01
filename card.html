@@ -33,7 +33,6 @@
         <div class="bar"></div>
     </div>
     <script src="common.js"></script>
-    <script src="ConectorEscposAndroid.js"></script>
     <script>
         var nombre = document.getElementById("cond-card-name");
         var rut = document.getElementById("cond-card-rut");
@@ -57,58 +56,6 @@
             btext+=fecha.textContent.replaceAll(" ","%20")+"%0A";
             btext+="____________________%0A";
             window.location.href = btext;
-        }
-        async function printTest(){
-            const conector = new ConectorEscposAndroid();
-            conector
-            .Iniciar()
-            .EstablecerAlineacion(ConectorEscposAndroid.ALINEACION_IZQUIERDA)
-            .EscribirTexto("____________________\n")
-            .EscribirTexto(nombre.textContent+"\n")
-            .EscribirTexto("____________________\n")
-            .EscribirTexto(rut.textContent+"\n")
-            .EscribirTexto(nfc.textContent+"\n")
-            .EscribirTexto(patente.textContent+"\n")
-            .EscribirTexto(empresa.textContent+"\n")
-            .EscribirTexto(fecha.textContent+"\n")
-            .EscribirTexto("_____________________\n")
-            .Pulso(48, 60, 120);
-
-            try {
-                const resp = await conector.imprimirEn("00:AA:11:BB:22:CC");
-                if (resp === true) {
-                    alert("Impreso correctamente");
-                } else {
-                    alert("Error: " + resp);
-                }
-            } catch (e) {
-                alert("Error imprimiendo: " + e.message);
-            }
-        }
-        function printCard(){
-            const card = document.getElementById("card-container");
-
-            let printCard = card.cloneNode(true);
-
-            const printWin = window.open('', ' ');
-            printWin.document.write('<html><head><title></title>'); // Open the print window
-            printWin.document.write('<style type="text/css">');
-            printWin.document.write('@media print {'); // Start of CSS for print media
-            printWin.document.write('  @page { margin: 0; }'); // Remove default margin
-            printWin.document.write('  body { margin: 0; }'); // Remove default margin
-            printWin.document.write('  body::before, body::after { content: none; }'); // Hide headers and footers
-            printWin.document.write('}');
-            printWin.document.write('</style>');
-            printWin.document.write('</head><body>'); // End of head and start of body
-
-            printWin.document.body.style.fontFamily = "courier, monospace";
-
-            printWin.document.body.style.fontSize = "56px";
-
-            printWin.document.body.appendChild(printCard);
-
-            printWin.print();
-            printWin.close();
         }
         async function loadData(){
             let data = await fetch("https://dev.wit.la/api/openconductores")
