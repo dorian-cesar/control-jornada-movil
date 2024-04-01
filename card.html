@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarjeta de Conductor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div id="card-container" class="print-container">
+            <hr>
+            <p id="cond-card-name">Nombre del Conductor</p>
+            <hr>
+            <p id="cond-card-rut">RUT</p>
+            <p id="cond-card-nfc">Tarjeta</p>
+            <p id="cond-card-patente">Vehiculo</p>
+            <p id="cond-card-empresa">Empresa</p>
+            <p id="cond-card-date">Fecha y Hora</p>
+        </div>
+        <button onclick="printCard()" class="btn-confirm">Imprimir</button>
+        <button onclick="loadData()" class="btn-confirm">Simular NFC</button>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <a href="index.html" class="sidebar-item">Logout</a>
+        <a href="#" class="sidebar-item">Consultas</a>
+    </div>
+    
+    <div class="menu-toggle" id="menu-toggle">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+    <script src="common.js"></script>
+    <script>
+        function fakeLogout(){
+            window.location.href = "index.html";
+        }
+        function printCard(){
+            const card = document.getElementById("card-container");
+
+            let printCard = card.cloneNode(true);
+
+            const printWin = window.open('', ' ');
+
+            printWin.document.body.style.fontFamily = "courier, monospace";
+
+            printWin.document.body.appendChild(printCard);
+
+            printWin.print();
+        }
+        async function loadData(){
+            let data = await fetch("https://dev.wit.la/api/openconductores")
+            .then(response => response.json())
+            .then(data => {
+                const conductor = data[0];
+                console.log(conductor);
+                const nombre = document.getElementById("cond-card-name");
+                const rut = document.getElementById("cond-card-rut");
+                const nfc = document.getElementById("cond-card-nfc");
+                const patente = document.getElementById("cond-card-patente");
+                const empresa = document.getElementById("cond-card-empresa");
+                const fecha = document.getElementById("cond-card-date");
+
+                nombre.textContent = conductor.nombre;
+                rut.textContent = conductor.rut;
+                if(conductor.smartcard){
+                    nfc.textContent = conductor.smartcard.number;
+                } else {
+                    nfc.textContent = 'Sin Tarejta Asignada';
+                }
+                if(conductor.vehicle){
+                    patente.textContent = conductor.vehicle.patente;
+                } else {
+                    patente.textContent = 'Sin Vehiculo Asignado';
+                }
+                if(conductor.company){
+                    empresa.textContent = conductor.company.nombre;
+                } else {
+                    empresa.textContent = 'Sin Empresa Asignada';
+                }
+
+                const fechaAct = new Date();
+
+                const horaStr = fechaAct.getHours()+':'+fechaAct.getMinutes()+':'+fechaAct.getSeconds();
+                const fechaStr = fechaAct.toISOString().split('T')[0];
+
+                fecha.textContent = fechaStr + " " + horaStr;
+
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }
+    </script>
+</body>
+</html>
