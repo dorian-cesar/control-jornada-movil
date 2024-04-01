@@ -18,7 +18,7 @@
             <p id="cond-card-empresa">Empresa</p>
             <p id="cond-card-date">Fecha y Hora</p>
         </div>
-        <button onclick="printCard()" class="btn-confirm">Imprimir</button>
+        <button onclick="printTest()" class="btn-confirm">Imprimir</button>
         <button onclick="loadData()" class="btn-confirm">Simular NFC</button>
     </div>
 
@@ -33,9 +33,36 @@
         <div class="bar"></div>
     </div>
     <script src="common.js"></script>
+    <script src="ConectorEscposAndroid.js"></script>
     <script>
+        var nombre = document.getElementById("cond-card-name");
+        var rut = document.getElementById("cond-card-rut");
+        var nfc = document.getElementById("cond-card-nfc");
+        var patente = document.getElementById("cond-card-patente");
+        var empresa = document.getElementById("cond-card-empresa");
+        var fecha = document.getElementById("cond-card-date");
+
         function fakeLogout(){
             window.location.href = "index.html";
+        }
+        async function printTest(){
+            const conector = new ConectorEscposAndroid();
+            conector
+            .Iniciar()
+            .EstablecerAlineacion(ConectorEscposAndroid.ALINEACION_IZQUIERDA)
+            .EscribirTexto(nombre.textContent)
+            .Pulso(48, 60, 120);
+
+            try {
+                const resp = await conector.imprimirEn("00:AA:11:BB:22:CC");
+                if (resp === true) {
+                    alert("Impreso correctamente");
+                } else {
+                    alert("Error: " + resp);
+                }
+            } catch (e) {
+                alert("Error imprimiendo: " + e.message);
+            }
         }
         function printCard(){
             const card = document.getElementById("card-container");
@@ -68,12 +95,6 @@
             .then(data => {
                 const conductor = data[0];
                 console.log(conductor);
-                const nombre = document.getElementById("cond-card-name");
-                const rut = document.getElementById("cond-card-rut");
-                const nfc = document.getElementById("cond-card-nfc");
-                const patente = document.getElementById("cond-card-patente");
-                const empresa = document.getElementById("cond-card-empresa");
-                const fecha = document.getElementById("cond-card-date");
 
                 nombre.textContent = conductor.nombre;
                 rut.textContent = conductor.rut;
