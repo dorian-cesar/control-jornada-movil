@@ -18,9 +18,8 @@
             <p id="cond-card-empresa">Empresa</p>
             <p id="cond-card-date">Fecha y Hora</p>
         </div>
-        <button onclick="printTest()" class="btn-confirm">Imprimir</button>
+        <button onclick="printRawBT()" class="btn-confirm">Imprimir</button>
         <button onclick="loadData()" class="btn-confirm">Simular NFC</button>
-        <a href="rawbt:Hello,%20world!%0A%0A" class="btn-confirm">Test</a>
     </div>
 
     <div class="sidebar" id="sidebar">
@@ -45,6 +44,19 @@
 
         function fakeLogout(){
             window.location.href = "index.html";
+        }
+        async function printRawBT(){
+            var btext = "rawbt:";
+            btext+="____________________%0A";
+            btext+=nombre.textContent.replaceAll(" ","%20")+"%0A";
+            btext+="____________________%0A";
+            btext+=rut.textContent.replaceAll(" ","%20")+"%0A";
+            btext+=nfc.textContent.replaceAll(" ","%20")+"%0A";
+            btext+=patente.textContent.replaceAll(" ","%20")+"%0A";
+            btext+=empresa.textContent.replaceAll(" ","%20")+"%0A";
+            btext+=fecha.textContent.replaceAll(" ","%20")+"%0A";
+            btext+="____________________%0A";
+            window.location.href = btext;
         }
         async function printTest(){
             const conector = new ConectorEscposAndroid();
