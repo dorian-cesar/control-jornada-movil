@@ -43,10 +43,19 @@
             let printCard = card.cloneNode(true);
 
             const printWin = window.open('', ' ');
+            printWin.document.write('<html><head><title></title>'); // Open the print window
+            printWin.document.write('<style type="text/css">');
+            printWin.document.write('@media print {'); // Start of CSS for print media
+            printWin.document.write('  @page { margin: 0; }'); // Remove default margin
+            printWin.document.write('  body { margin: 0; }'); // Remove default margin
+            printWin.document.write('  body::before, body::after { content: none; }'); // Hide headers and footers
+            printWin.document.write('}');
+            printWin.document.write('</style>');
+            printWin.document.write('</head><body>'); // End of head and start of body
 
             printWin.document.body.style.fontFamily = "courier, monospace";
 
-            printWin.document.body.style.fontSize = "60px";
+            printWin.document.body.style.fontSize = "56px";
 
             printWin.document.body.appendChild(printCard);
 
