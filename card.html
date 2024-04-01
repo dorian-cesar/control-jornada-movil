@@ -50,7 +50,14 @@
             conector
             .Iniciar()
             .EstablecerAlineacion(ConectorEscposAndroid.ALINEACION_IZQUIERDA)
+            .EscribirTexto("____________________\n")
             .EscribirTexto(nombre.textContent)
+            .EscribirTexto("____________________\n")
+            .EscribirTexto(rut.textContent)
+            .EscribirTexto(nfc.textContent)
+            .EscribirTexto(patente.textContent)
+            .EscribirTexto(empresa.textContent)
+            .EscribirTexto(fecha.textContent)
             .Pulso(48, 60, 120);
 
             try {
