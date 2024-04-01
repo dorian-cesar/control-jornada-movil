@@ -42,9 +42,11 @@
 
             let printCard = card.cloneNode(true);
 
-            const printWin = window.open('', ' ', 'width=320');
+            const printWin = window.open('', ' ');
 
             printWin.document.body.style.fontFamily = "courier, monospace";
+
+            printWin.document.body.style.maxWidth = "280px";
 
             printWin.document.body.appendChild(printCard);
 
