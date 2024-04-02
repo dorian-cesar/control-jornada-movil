@@ -37,7 +37,7 @@ body {
     background-color: #fff;
     box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.3);
     font-family: courier, monospace;
-    max-height: 480px;
+    max-height: 240px;
     overflow-y: auto;
 }
 .dash-container {
