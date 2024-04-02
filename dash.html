@@ -5,21 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tarjeta de Conductor</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
     <div class="container">
-        <div id="card-container" class="print-container">
-            <hr>
-            <p id="cond-card-name"><b>Nombre del Conductor</b></p>
-            <hr>
-            <p id="cond-card-rut">RUT</p>
-            <p id="cond-card-nfc">Tarjeta</p>
-            <p id="cond-card-patente">Vehiculo</p>
-            <p id="cond-card-empresa">Empresa</p>
-            <p id="cond-card-date">Fecha y Hora</p>
+        <div class="dash-container">
+            <div class="dash-item"><div class="dash-btn"><i class="fa fa-bus fa-fw"></i></div><span>Control de Jornada</span></div>
+            <div class="dash-item"><div class="dash-btn"><i class="fa fa-history fa-fw"></i></div><span>Registros</span></div>
+            <div class="dash-item"><div class="dash-btn"><i class="fa fa-history fa-fw"></i></div><span>Registros</span></div>
+            <div class="dash-item"><div class="dash-btn"><i class="fa fa-history fa-fw"></i></div><span>Registros</span></div>
+            <div class="dash-item"><div class="dash-btn"><i class="fa fa-history fa-fw"></i></div><span>Registros</span></div>
         </div>
-        <button onclick="printRawBT()" class="btn-confirm">Imprimir</button>
-        <button onclick="loadData()" class="btn-confirm">Simular NFC</button>
     </div>
 
     <div class="sidebar" id="sidebar">

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarjeta de Conductor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div id="card-container" class="log-container">
+            <hr>
+            <b><p class="print-left">Juan Perez</p><p id="log-patente" class="print-right">LGJW-26</p></b>
+            <hr>
+            <p class="print-left">18452182-4</p><p id="log-fecha" class="print-right">10/05/2024</p>
+            <span id="log-content">
+                <hr>
+                <p id="log-0-hora" class="print-left">10:50</p><p id="log-0-speed" class="print-right">42Km/h</p>
+                <p id="log-0-lat" class="print-left">-33.408035</p><p id="log-0-lng" class="print-right">-70.5549716</p>
+                <hr>
+                <p id="log-1-hora" class="print-left">10:50</p><p id="log-1-speed" class="print-right">42Km/h</p>
+                <p id="log-1-lat" class="print-left">-33.408035</p><p id="log-1-lng" class="print-right">-70.5549716</p>
+                <hr>
+                <p id="log-2-hora" class="print-left">10:50</p><p id="log-2-speed" class="print-right">42Km/h</p>
+                <p id="log-2-lat" class="print-left">-33.408035</p><p id="log-2-lng" class="print-right">-70.5549716</p>
+                <hr>
+                <p id="log-3-hora" class="print-left">10:50</p><p id="log-3-speed" class="print-right">42Km/h</p>
+                <p id="log-3-lat" class="print-left">-33.408035</p><p id="log-3-lng" class="print-right">-70.5549716</p>
+                <hr>
+                <p id="log-4-hora" class="print-left">10:50</p><p id="log-4-speed" class="print-right">42Km/h</p>
+                <p id="log-4-lat" class="print-left">-33.408035</p><p id="log-4-lng" class="print-right">-70.5549716</p>
+            </span>
+        </div>
+        <select class="btn-confirm" name="vehicle" id="selveh">
+            <option value="LGJW-17">LGJW-17</option>
+            <option value="LGJW-22">LGJW-22</option>
+            <option value="LGJW-24">LGJW-24</option>
+            <option value="LGJW-26">LGJW-26</option>
+            <option value="LGJW-16">LGJW-16</option>
+        </select>
+        <button onclick="loadData()" class="btn-confirm">Cargar Datos</button>
+        <button onclick="printRawBT()" class="btn-confirm">Imprimir</button>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <a href="index.html" class="sidebar-item">Logout</a>
+        <a href="card.html" class="sidebar-item">Tarjeta</a>
+        <a href="#" class="sidebar-item">Consultas</a>
+    </div>
+    
+    <div class="menu-toggle" id="menu-toggle">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+    <script src="common.js"></script>
+    <script>
+        var patente = document.getElementById("log-patente");
+        var fecha = document.getElementById("log-fecha");
+        var logcontent = document.getElementById("log-content");
+        var vehsel = document.getElementById("selveh");
+
+        function fakeLogout(){
+            window.location.href = "index.html";
+        }
+        async function printRawBT(){
+            var btext = "--------------------------------\n";
+            btext += nombre.textContent + "\n";
+            btext += "--------------------------------\n";
+            btext += rut.textContent + "\n";
+            btext += nfc.textContent + "\n";
+            btext += patente.textContent + "\n";
+            btext += empresa.textContent + "\n";
+            btext += fecha.textContent + "\n";
+            btext += "--------------------------------\n";
+            btext = toBT(btext);
+            window.location.href = btext;
+        }
+        async function loadData(){
+            let vehpat = vehsel.value;
+            let data = await fetch("https://dev.wit.la/api/gpshist/"+vehpat)
+            .then(response => response.json())
+            .then(data => {
+                const logs = data.report.sheets[0].sections[0].data[0].rows;
+
+                patente.textContent = data.report.sheets[0].header;
+                fecha.textContent = data.report.created.split(" ")[0];
+
+                logcontent.textContent = "";
+
+                var logcnt = -5;
+
+                if(logs.length<5) {
+                    logcnt = logs.length*-1;
+                }
+
+                logs.slice().reverse().forEach(item => {
+                    var logHR = document.createElement("hr");
+                    var logHour = document.createElement("p");
+                    var logSpeed = document.createElement("p");
+                    var logLat = document.createElement("p");
+                    var logLng = document.createElement("p");
+
+                    logHour.textContent = item.date.v.split(" ")[1];
+                    logSpeed.textContent = item.speed.v+"Km/h";
+                    logLat.textContent = item.lat.v;
+                    logLng.textContent = item.lng.v;
+
+                    logHour.classList.add("print-left");
+                    logLat.classList.add("print-left");
+
+                    logSpeed.classList.add("print-right");
+                    logLng.classList.add("print-right");
+
+                    logcontent.appendChild(logHR);
+                    logcontent.appendChild(logHour);
+                    logcontent.appendChild(logSpeed);
+                    logcontent.appendChild(logLat);
+                    logcontent.appendChild(logLng);
+                });
+                
+                /*const conductor = data[0];
+                console.log(conductor);
+
+                nombre.textContent = conductor.nombre;
+                rut.textContent = conductor.rut;
+                if(conductor.smartcard){
+                    nfc.textContent = conductor.smartcard.number;
+                } else {
+                    nfc.textContent = 'Sin Tarejta Asignada';
+                }
+                if(conductor.vehicle){
+                    patente.textContent = conductor.vehicle.patente;
+                } else {
+                    patente.textContent = 'Sin Vehiculo Asignado';
+                }
+                if(conductor.company){
+                    empresa.textContent = conductor.company.nombre;
+                } else {
+                    empresa.textContent = 'Sin Empresa Asignada';
+                }
+
+                const fechaAct = new Date();
+
+                const horaStr = fechaAct.getHours()+':'+fechaAct.getMinutes()+':'+fechaAct.getSeconds();
+                const fechaStr = fechaAct.toISOString().split('T')[0];
+
+                fecha.textContent = fechaStr + " " + horaStr;*/
+
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }
+    </script>
+</body>
+</html>
