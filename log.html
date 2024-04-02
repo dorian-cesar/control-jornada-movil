@@ -10,10 +10,9 @@
     <div class="container">
         <div id="card-container" class="log-container">
             <hr>
-            <b><p class="print-left">Juan Perez</p><p id="log-patente" class="print-right">LGJW-26</p></b>
-            <hr>
+            <b style="font-weight: 800;"><p class="print-left">Juan Perez</p><p id="log-patente" class="print-right">LGJW-26</p></b>
             <p class="print-left">18452182-4</p><p id="log-fecha" class="print-right">10/05/2024</p>
-            <span id="log-content">
+            <span id="log-content" class="eventos">
                 <hr>
                 <p id="log-0-hora" class="print-left">10:50</p><p id="log-0-speed" class="print-right">42Km/h</p>
                 <p id="log-0-lat" class="print-left">-33.408035</p><p id="log-0-lng" class="print-right">-70.5549716</p>
@@ -119,33 +118,8 @@
                     logcontent.appendChild(logLng);
                 });
                 
-                /*const conductor = data[0];
-                console.log(conductor);
-
-                nombre.textContent = conductor.nombre;
-                rut.textContent = conductor.rut;
-                if(conductor.smartcard){
-                    nfc.textContent = conductor.smartcard.number;
-                } else {
-                    nfc.textContent = 'Sin Tarejta Asignada';
-                }
-                if(conductor.vehicle){
-                    patente.textContent = conductor.vehicle.patente;
-                } else {
-                    patente.textContent = 'Sin Vehiculo Asignado';
-                }
-                if(conductor.company){
-                    empresa.textContent = conductor.company.nombre;
-                } else {
-                    empresa.textContent = 'Sin Empresa Asignada';
-                }
-
-                const fechaAct = new Date();
-
-                const horaStr = fechaAct.getHours()+':'+fechaAct.getMinutes()+':'+fechaAct.getSeconds();
-                const fechaStr = fechaAct.toISOString().split('T')[0];
-
-                fecha.textContent = fechaStr + " " + horaStr;*/
+                // TO DO
+                // Pantalla de carga, mover botones, ajustar log al mismo tamaño de los botones, oscurecer sombra
 
             })
             .catch(error => {

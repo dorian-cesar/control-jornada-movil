@@ -46,15 +46,15 @@
             window.location.href = "index.html";
         }
         async function printRawBT(){
-            var btext = "-----------------------------\n";
+            var btext = divider;
             btext += nombre.textContent + "\n";
-            btext += "-----------------------------\n";
+            btext += divider;
             btext += rut.textContent + "\n";
             btext += nfc.textContent + "\n";
             btext += patente.textContent + "\n";
             btext += empresa.textContent + "\n";
             btext += fecha.textContent + "\n";
-            btext += "-----------------------------\n";
+            btext += divider;
             btext = toBT(btext);
             window.location.href = btext;
         }

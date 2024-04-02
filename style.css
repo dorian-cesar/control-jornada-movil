@@ -84,6 +84,9 @@ body {
     padding: none;
     line-height: 4px;
 }
+.eventos {
+    font-size: small;
+}
 .btn-confirm {
     width: 320px;
     padding: 10px;
