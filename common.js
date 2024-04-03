@@ -6,7 +6,7 @@ sidebarToggle.addEventListener('click', () => {
     sidebarToggle.classList.toggle('active');
 });*/
 
-const divider = "-----------------------------\n";
+const divider = "-".repeat(29)+"\n";
 
 function toColumn(left,right){
     const space = 29-(left.length+right.length);
