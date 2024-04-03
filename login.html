@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Control de jornada</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!--POS: 360x512-->
+<div class="container">
+    <div class="login-form">
+        <h2>Bienvenido a Control de Jornada</h2>
+        <input type="text" placeholder="Username">
+        <input type="password" placeholder="Password">
+        <button onclick="fakeLogin()">Login</button>
+    </div>
+</div>
+
+<div class="sidebar" id="sidebar">
+    <a href="#" class="sidebar-item">Login</a>
+</div>
+
+<div class="menu-toggle" id="menu-toggle">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+</div>
+<script src="common.js"></script>
+<script>
+    function fakeLogin(){
+        window.location.href = "log.html";
+    }
+</script>
+</body>
+</html>
+

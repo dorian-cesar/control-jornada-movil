@@ -1,37 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Control de jornada</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarjeta de Conductor</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<!--POS: 360x512-->
-<div class="container">
-    <div class="login-form">
-        <h2>Bienvenido a Control de Jornada</h2>
-        <input type="text" placeholder="Username">
-        <input type="password" placeholder="Password">
-        <button onclick="fakeLogin()">Login</button>
+    <div class="container">
+        <h1>Ultimos Registros</h1>
+        <div id="card-container" class="log-container">
+            <hr>
+            <b style="font-weight: 800;"><p id="log-nombre" class="print-left">Juan Perez</p><p id="log-patente" class="print-right">LGJW-22</p></b>
+            <p id="log-rut" class="print-left">18452182-4</p><p id="log-fecha" class="print-right">10/05/2024</p>
+            <span id="log-content" class="eventos">
+                <hr>
+                <p class="print-left">11:30:52</p><p class="print-right">42Km/h</p>
+                <p class="print-left">-33.405297</p><p class="print-right">-70.539448</p>
+                <hr>
+                <p class="print-left">11:30:40</p><p class="print-right">35Km/h</p>
+                <p class="print-left">-33.405542</p><p class="print-right">-70.540527</p>
+                <hr>
+                <p class="print-left">11:30:31</p><p class="print-right">38Km/h</p>
+                <p class="print-left">-33.405785</p><p class="print-right">-70.541643</p>
+                <hr>
+                <p class="print-left">11:30:23</p><p class="print-right">40Km/h</p>
+                <p class="print-left">-33.406015</p><p class="print-right">-70.542745</p>
+                <hr>
+                <p class="print-left">11:30:15</p><p class="print-right">43Km/h</p>
+                <p class="print-left">-33.406387</p><p class="print-right">-70.543847</p>
+            </span>
+        </div>
+        <input class="input-patente" type="text" name="patente" id="selveh" placeholder="LGJW-22" value="LGJW-22" />
+        <div class="btn-container">
+            <button onclick="loadData()" class="btn-half">Cargar Datos</button>
+            <button onclick="printRawBT()" class="btn-half">Imprimir</button>
+        </div>
+        
+        <div id="loadScreen" class="modal-bg">
+            <span>
+                <h1></h1>
+                <h3>Cargando</h3>
+            </span>
+        </div>
+        
     </div>
-</div>
+    <script src="common.js"></script>
+    <script>
+        var cardText = document.getElementById("card-container");
+        var nombre = document.getElementById("log-nombre");
+        var patente = document.getElementById("log-patente");
+        var rut = document.getElementById("log-rut");
+        var fecha = document.getElementById("log-fecha");
+        var logcontent = document.getElementById("log-content");
+        var vehsel = document.getElementById("selveh");
+        var loadScreen = document.getElementById("loadScreen");
 
-<div class="sidebar" id="sidebar">
-    <a href="#" class="sidebar-item">Login</a>
-</div>
+        var dataArr = null;
 
-<div class="menu-toggle" id="menu-toggle">
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-</div>
-<script src="common.js"></script>
-<script>
-    function fakeLogin(){
-        window.location.href = "log.html";
-    }
-</script>
+        loadData();
+
+        function fakeLogout(){
+            window.location.href = "index.html";
+        }
+        async function printRawBT(){
+            if(dataArr){
+                var btext = divider;
+                btext += nombre.textContent + "            " + patente.textContent + "\n";
+                btext += rut.textContent + "         " + fecha.textContent + "\n";
+                for(let i = 0;i<5;i++){
+                    if(dataArr[i]){
+                        btext += divider;
+                        let horaStr = dataArr[i].date.v.split(" ")[1]; //To-Do remover split
+                        let speedStr = dataArr[i].speed.v+"Km/h";
+                        let latStr = dataArr[i].lat.v;
+                        let lngStr = dataArr[i].lng.v;
+                        btext += horaStr + "               " + speedStr + "\n";
+                        btext += latStr + " , " + lngStr + "\n";
+                    }
+                }
+                btext = toBT(btext);
+                console.log(btext);
+                window.location.href = btext;
+            } else { // Imprimir datos falsos
+                var btext = divider;
+                btext += nombre.textContent + "            " + patente.textContent + "\n";
+                btext += rut.textContent + "         " + fecha.textContent + "\n";
+
+                    btext += divider;
+                    btext += "11:30:52" + "               " + "42Km/h" + "\n";
+                    btext += "-33.405297" + " , " + "-70.539448" + "\n";
+
+                    btext += divider;
+                    btext += "11:30:40" + "               " + "35Km/h" + "\n";
+                    btext += "-33.405542" + " , " + "-70.540527" + "\n";
+
+                    btext += divider;
+                    btext += "11:30:31" + "               " + "38Km/h" + "\n";
+                    btext += "-33.405785" + " , " + "-70.541643" + "\n";
+
+                    btext += divider;
+                    btext += "11:30:23" + "               " + "40Km/h" + "\n";
+                    btext += "-33.406015" + " , " + "-70.542745" + "\n";
+
+                    btext += divider;
+                    btext += "11:30:15" + "               " + "43Km/h" + "\n";
+                    btext += "-33.406387" + " , " + "-70.543847" + "\n";
+
+                btext = toBT(btext);
+                console.log(btext);
+                window.location.href = btext;
+            }
+        }
+        async function loadData(){
+            let vehpat = vehsel.value;
+            loadScreen.style.display = "block";
+            let data = await fetch("https://dev.wit.la/api/gpshist/"+vehpat)
+            .then(response => response.json())
+            .then(data => {
+                if(!data.report.sheets[0].sections[0].data){
+                    //Desactivado temporalmente
+                    //window.alert("No hay registros!");
+                    loadScreen.style.display = "none";
+                    return;
+                }
+                loadScreen.style.display = "none";
+                const logs = data.report.sheets[0].sections[0].data[0].rows;
+
+                dataArr = logs.reverse();
+
+                patente.textContent = data.report.sheets[0].header;
+                fecha.textContent = data.report.created.split(" ")[0];
+
+                logcontent.textContent = "";
+
+                /* Para limitar la cantidad de registros
+                var logcnt = -5;
+
+                if(logs.length<5) {
+                    logcnt = logs.length*-1;
+                }*/
+
+                dataArr.forEach(item => {
+                    var logHR = document.createElement("hr");
+                    var logHour = document.createElement("p");
+                    var logSpeed = document.createElement("p");
+                    var logLat = document.createElement("p");
+                    var logLng = document.createElement("p");
+
+                    logHour.textContent = item.date.v.split(" ")[1];
+                    logSpeed.textContent = item.speed.v+"Km/h";
+                    logLat.textContent = item.lat.v;
+                    logLng.textContent = item.lng.v;
+
+                    logHour.classList.add("print-left");
+                    logLat.classList.add("print-left");
+
+                    logSpeed.classList.add("print-right");
+                    logLng.classList.add("print-right");
+
+                    logcontent.appendChild(logHR);
+                    logcontent.appendChild(logHour);
+                    logcontent.appendChild(logSpeed);
+                    logcontent.appendChild(logLat);
+                    logcontent.appendChild(logLng);
+                });
+                
+                // TO DO
+                // Pantalla de carga, mover botones, ajustar log al mismo tamaño de los botones, oscurecer sombra
+
+            })
+            .catch(error => {
+                loadScreen.style.display = "none";
+                console.error(error);
+            });
+        }
+    </script>
 </body>
 </html>
-
