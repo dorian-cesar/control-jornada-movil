@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 id="restest">Test</h1>
+        <h1>Ultimos Registros</h1>
         <div id="card-container" class="log-container">
             <hr>
             <b style="font-weight: 800;"><p class="print-left">Juan Perez</p><p id="log-patente" class="print-right">LGJW-26</p></b>
@@ -31,58 +31,46 @@
                 <p id="log-4-lat" class="print-left">-33.408035</p><p id="log-4-lng" class="print-right">-70.5549716</p>
             </span>
         </div>
-        <select class="btn-confirm" name="vehicle" id="selveh">
-            <option value="LGJW-17">LGJW-17</option>
-            <option value="LGJW-22">LGJW-22</option>
-            <option value="LGJW-24">LGJW-24</option>
-            <option value="LGJW-26">LGJW-26</option>
-            <option value="LGJW-16">LGJW-16</option>
-        </select>
-        <button onclick="loadData()" class="btn-confirm">Cargar Datos</button>
-        <button onclick="printRawBT()" class="btn-confirm">Imprimir</button>
-    </div>
-
-    <div class="sidebar" id="sidebar">
-        <a href="index.html" class="sidebar-item">Logout</a>
-        <a href="card.html" class="sidebar-item">Tarjeta</a>
-        <a href="#" class="sidebar-item">Consultas</a>
-    </div>
-    
-    <div class="menu-toggle" id="menu-toggle">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
+        <input class="input-patente" type="text" name="patente" id="selveh" placeholder="LGJW-22" value="LGJW-22" />
+        <div class="btn-container">
+            <button onclick="loadData()" class="btn-half">Cargar Datos</button>
+            <button onclick="printRawBT()" class="btn-half">Imprimir</button>
+        </div>
+        
+        <div id="loadScreen" class="modal-bg">
+            <span>
+                <h1></h1>
+                <h3>Cargando</h3>
+            </span>
+        </div>
+        
     </div>
     <script src="common.js"></script>
     <script>
+        var cardText = document.getElementById("card-container");
         var patente = document.getElementById("log-patente");
         var fecha = document.getElementById("log-fecha");
         var logcontent = document.getElementById("log-content");
         var vehsel = document.getElementById("selveh");
+        var loadScreen = document.getElementById("loadScreen");
 
-        document.getElementById("restest").textContent = window.innerWidth+"x"+window.innerHeight;
+
 
         function fakeLogout(){
             window.location.href = "index.html";
         }
         async function printRawBT(){
-            var btext = "--------------------------------\n";
-            btext += nombre.textContent + "\n";
-            btext += "--------------------------------\n";
-            btext += rut.textContent + "\n";
-            btext += nfc.textContent + "\n";
-            btext += patente.textContent + "\n";
-            btext += empresa.textContent + "\n";
-            btext += fecha.textContent + "\n";
-            btext += "--------------------------------\n";
-            btext = toBT(btext);
-            window.location.href = btext;
+            var testText = toBT(cardText.innerText);
+            console.log(testText);
+            window.location.href = testText;
         }
         async function loadData(){
             let vehpat = vehsel.value;
+            loadScreen.style.display = "block";
             let data = await fetch("https://dev.wit.la/api/gpshist/"+vehpat)
             .then(response => response.json())
             .then(data => {
+                loadScreen.style.display = "none";
                 const logs = data.report.sheets[0].sections[0].data[0].rows;
 
                 patente.textContent = data.report.sheets[0].header;
@@ -90,13 +78,14 @@
 
                 logcontent.textContent = "";
 
+                /* Para limitar la cantidad de registros
                 var logcnt = -5;
 
                 if(logs.length<5) {
                     logcnt = logs.length*-1;
-                }
+                }*/
 
-                logs.slice().reverse().forEach(item => {
+                logs.reverse().forEach(item => {
                     var logHR = document.createElement("hr");
                     var logHour = document.createElement("p");
                     var logSpeed = document.createElement("p");
@@ -126,6 +115,7 @@
 
             })
             .catch(error => {
+                loadScreen.style.display = "none";
                 console.error(error);
             });
         }

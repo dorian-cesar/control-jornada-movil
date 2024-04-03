@@ -3,13 +3,19 @@ body {
     padding: 0;
     font-family: Arial, sans-serif;
 }
+
+h1 {
+    color: white;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
 .container {
     width: 100%;
     min-height: 100vh;
     height: max-content;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: baseline;
     align-items: center;
     background-color: #3498db;
 }
@@ -37,7 +43,8 @@ body {
     background-color: #fff;
     box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.3);
     font-family: courier, monospace;
-    max-height: 240px;
+    min-height: 270px;
+    max-height: 270px;
     overflow-y: auto;
 }
 .dash-container {
@@ -98,7 +105,87 @@ body {
     background-color: #34db5e;
     box-sizing: border-box;
     font-weight: bold;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.3);
+}
+.input-patente {
+    width: 362px;
+    max-width: 96vw;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    background-color: #dfdfdf;
+    box-sizing: border-box;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.3);
+}
+.btn-container {
+    width: 362px;
+    max-width: 96vw;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-evenly;
+}
+.btn-half {
+    display: inline;
+    flex-basis: 49%;
+    padding: 10px;
+    margin: auto;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    background-color: #34db5e;
+    box-sizing: border-box;
+    font-weight: bold;
+    box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.3);
+}
+.modal-bg {
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #0000008e;
+}
+.modal-bg span {
+    color:white;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+.modal-bg h1 {
+    font-size: 80px;
+    width: 100%;
+    margin: auto;
+}
+.modal-bg h1:after {
+    content: "...";
+    animation-name: dots;
+    animation-duration: 1000ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear; 
+}
+@keyframes dots {
+    0% {
+        content: "...";
+    }
+    25% {
+        content: "..";
+    }
+    50% {
+        content: ".";
+    }
+    75% {
+        content: "..";
+    }
+    100% {
+        content: "...";
+    }
 }
 .dash-btn {
     width: 70px;
