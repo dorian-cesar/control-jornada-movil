@@ -147,7 +147,11 @@
                 dataArr = logs.reverse();
 
                 if(data.driver){
-                    nombre.textContent = data.driver.nombre;
+                    let nombreCond = data.driver.nombre;
+                    if(nombreCond.length>14){
+                        nombreCond = nombreCond.substring(0,14);
+                    }
+                    nombre.textContent = nombreCond;
                     rut.textContent = data.driver.rut;
                 } else {
                     nombre.textContent = "Juan Perez";
