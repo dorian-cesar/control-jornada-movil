@@ -10,13 +10,14 @@
     <div class="container">
         <h1>Control en ruta</h1>
         <div class="btn-container">
-            <input class="input-patente" type="text" name="patente" id="selveh" placeholder="Ingrese patente"/>
+            <input oninput="this.value = this.value.toUpperCase()" class="input-patente" type="text" name="patente" id="selveh" placeholder="Ingrese patente"/>
             <button onclick="loadData()" class="btn-half">Cargar datos</button>
         </div>
         <div id="card-container" class="log-container">
             <hr>
             <b style="font-weight: 800;"><p id="log-nombre" class="print-left">Juan Perez</p><p id="log-patente" class="print-right">LGJW-22</p></b>
             <p id="log-rut" class="print-left">18452182-4</p><p id="log-fecha" class="print-right">10/05/2024</p>
+            <span id="log-status">En movimiento</span>
             <span id="log-content" class="eventos">
                 <hr>
                 <p class="print-left">11:30:52</p><p class="print-right">42Km/h</p>
@@ -53,6 +54,7 @@
         var rut = document.getElementById("log-rut");
         var fecha = document.getElementById("log-fecha");
         var logcontent = document.getElementById("log-content");
+        var logstatus = document.getElementById("log-status");
         var vehsel = document.getElementById("selveh");
         var loadScreen = document.getElementById("loadScreen");
 
@@ -68,6 +70,7 @@
                 var btext = divider;
                 btext += toColumn(nombre.textContent,patente.textContent);
                 btext += toColumn(rut.textContent,fecha.textContent);
+                btext += toLeft(logstatus.textContent);
                 for(let i = 0;i<5;i++){
                     if(dataArr[i]){
                         btext += divider;
@@ -83,6 +86,8 @@
                 console.log(btext);
                 window.location.href = btext;
             } else { // Imprimir datos falsos
+                window.alert("Nada que imprimir");
+                return;
                 var btext = divider;
                 btext += toColumn(nombre.textContent,patente.textContent);
                 btext += toColumn(rut.textContent,fecha.textContent);
@@ -118,6 +123,7 @@
                 vehsel.focus();
                 return;
             }
+            console.log(vehpat);
             loadScreen.style.display = "block";
             let data = await fetch("https://dev.wit.la/api/gpshist/"+vehpat)
             .then(response => response.json())
@@ -125,6 +131,12 @@
                 if(!data.report.sheets[0].sections[0].data){
                     //Desactivado temporalmente
                     //window.alert("No hay registros!");
+                    logcontent.textContent = "";
+                    nombre.textContent = "Sin registros";
+                    patente.textContent = "";
+                    rut.textContent = "";
+                    fecha.textContent = "";
+                    logstatus.textContent = "";
                     loadScreen.style.display = "none";
                     return;
                 }
@@ -133,8 +145,12 @@
 
                 dataArr = logs.reverse();
 
+
+                nombre.textContent = "Juan Perez";
+                rut.textContent = "18452182-4";
                 patente.textContent = data.report.sheets[0].header;
                 fecha.textContent = data.report.created.split(" ")[0];
+                logstatus.textContent = dataArr[0].status.v;
 
                 logcontent.textContent = "";
 
