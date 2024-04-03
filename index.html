@@ -9,6 +9,10 @@
 <body>
     <div class="container">
         <h1>Ultimos Registros</h1>
+        <div class="btn-container">
+            <input class="input-patente" type="text" name="patente" id="selveh" placeholder="LGJW-22" value="LGJW-22" />
+            <button onclick="loadData()" class="btn-half">Cargar Datos</button>
+        </div>
         <div id="card-container" class="log-container">
             <hr>
             <b style="font-weight: 800;"><p id="log-nombre" class="print-left">Juan Perez</p><p id="log-patente" class="print-right">LGJW-22</p></b>
@@ -31,11 +35,7 @@
                 <p class="print-left">-33.406387</p><p class="print-right">-70.543847</p>
             </span>
         </div>
-        <input class="input-patente" type="text" name="patente" id="selveh" placeholder="LGJW-22" value="LGJW-22" />
-        <div class="btn-container">
-            <button onclick="loadData()" class="btn-half">Cargar Datos</button>
-            <button onclick="printRawBT()" class="btn-half">Imprimir</button>
-        </div>
+        <button onclick="printRawBT()" class="btn-confirm">Imprimir</button>
         
         <div id="loadScreen" class="modal-bg">
             <span>
@@ -58,7 +58,7 @@
 
         var dataArr = null;
 
-        loadData();
+        //loadData();
 
         function fakeLogout(){
             window.location.href = "index.html";

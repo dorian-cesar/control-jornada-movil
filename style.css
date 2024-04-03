@@ -43,8 +43,8 @@ h1 {
     background-color: #fff;
     box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.3);
     font-family: courier, monospace;
-    min-height: 295px;
-    max-height: 295px;
+    min-height: 290px;
+    max-height: 290px;
     overflow-y: auto;
 }
 .dash-container {
@@ -97,7 +97,7 @@ h1 {
 .btn-confirm {
     width: 362px;
     max-width: 96vw;
-    padding: 10px;
+    padding: 12px;
     margin-top: 10px;
     border: none;
     border-radius: 5px;
@@ -108,12 +108,13 @@ h1 {
     box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.3);
 }
 .input-patente {
-    width: 362px;
-    max-width: 96vw;
+    display: inline;
+    flex-basis: 49%;
     padding: 10px;
-    margin-top: 10px;
+    margin: auto;
     border: none;
-    border-radius: 5px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
     outline: none;
     background-color: #dfdfdf;
     box-sizing: border-box;
@@ -128,6 +129,7 @@ h1 {
     width: 362px;
     max-width: 96vw;
     margin-top: 10px;
+    margin-bottom: 10px;
     display: flex;
     justify-content: space-evenly;
 }
@@ -137,7 +139,9 @@ h1 {
     padding: 10px;
     margin: auto;
     border: none;
-    border-radius: 5px;
+    border-left: 6px solid #1a8535;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
     outline: none;
     background-color: #34db5e;
     box-sizing: border-box;
@@ -146,6 +150,7 @@ h1 {
 }
 .btn-half:focus {
     background-color: #faf174;
+    border-left: 6px solid #6b512e;
 }
 .modal-bg {
     display: none;
