@@ -8,6 +8,11 @@ sidebarToggle.addEventListener('click', () => {
 
 const divider = "-----------------------------\n";
 
+function toColumn(left,right){
+    const space = 29-(left.length+right.length);
+    return left + " ".repeat(space) + right + "\n";
+}
+
 function toBT(input) {
     var output = "rawbt:" + input;
     output = output.replaceAll(" ", "%20");

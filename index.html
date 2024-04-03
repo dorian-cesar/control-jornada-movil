@@ -75,8 +75,8 @@
                         let speedStr = dataArr[i].speed.v+"Km/h";
                         let latStr = dataArr[i].lat.v;
                         let lngStr = dataArr[i].lng.v;
-                        btext += horaStr + "               " + speedStr + "\n";
-                        btext += latStr + " , " + lngStr + "\n";
+                        btext += toColumn(horaStr,speedStr);
+                        btext += toColumn(latStr,lngStr);
                     }
                 }
                 btext = toBT(btext);
