@@ -8,10 +8,10 @@
 </head>
 <body>
     <div class="container">
-        <h1>Ultimos Registros</h1>
+        <h1>Control en ruta</h1>
         <div class="btn-container">
-            <input class="input-patente" type="text" name="patente" id="selveh" placeholder="LGJW-22" value="LGJW-22" />
-            <button onclick="loadData()" class="btn-half">Cargar Datos</button>
+            <input class="input-patente" type="text" name="patente" id="selveh" placeholder="Ingrese patente"/>
+            <button onclick="loadData()" class="btn-half">Cargar datos</button>
         </div>
         <div id="card-container" class="log-container">
             <hr>
@@ -114,6 +114,10 @@
         }
         async function loadData(){
             let vehpat = vehsel.value;
+            if(!vehpat){
+                vehsel.focus();
+                return;
+            }
             loadScreen.style.display = "block";
             let data = await fetch("https://dev.wit.la/api/gpshist/"+vehpat)
             .then(response => response.json())
