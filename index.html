@@ -146,9 +146,13 @@
 
                 dataArr = logs.reverse();
 
-
-                nombre.textContent = "Juan Perez";
-                rut.textContent = "18452182-4";
+                if(data.driver){
+                    nombre.textContent = data.driver.nombre;
+                    rut.textContent = data.driver.rut;
+                } else {
+                    nombre.textContent = "Juan Perez";
+                    rut.textContent = "18452182-4";
+                }
                 patente.textContent = data.report.sheets[0].header;
                 fecha.textContent = data.report.created.split(" ")[0];
                 logstatus.textContent = dataArr[0].status.v;
