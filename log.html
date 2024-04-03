@@ -56,8 +56,8 @@
                 var btext = divider;
                 btext += nombre.textContent + "            " + patente.textContent + "\n";
                 btext += rut.textContent + "         " + fecha.textContent + "\n";
-                btext += divider;
                 for(let i = 0;i<5;i++){
+                    btext += divider;
                     let horaStr = dataArr[i].date.v.split(" ")[1]; //To-Do remover split
                     let speedStr = dataArr[i].speed.v+"Km/h";
                     let latStr = dataArr[i].lat.v;
