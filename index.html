@@ -15,25 +15,10 @@
         </div>
         <div id="card-container" class="log-container">
             <hr>
-            <b style="font-weight: 800;"><p id="log-nombre" class="print-left">Juan Perez</p><p id="log-patente" class="print-right">LGJW-22</p></b>
-            <p id="log-rut" class="print-left">18452182-4</p><p id="log-fecha" class="print-right">10/05/2024</p>
-            <span id="log-status">En movimiento</span>
+            <b style="font-weight: 800;"><p id="log-nombre" class="print-left"> </p><p id="log-patente" class="print-right"> </p></b>
+            <p id="log-rut" class="print-left"> </p><p id="log-fecha" class="print-right"> </p>
+            <span id="log-status"> </span>
             <span id="log-content" class="eventos">
-                <hr>
-                <p class="print-left">11:30:52</p><p class="print-right">42Km/h</p>
-                <p class="print-left">-33.405297</p><p class="print-right">-70.539448</p>
-                <hr>
-                <p class="print-left">11:30:40</p><p class="print-right">35Km/h</p>
-                <p class="print-left">-33.405542</p><p class="print-right">-70.540527</p>
-                <hr>
-                <p class="print-left">11:30:31</p><p class="print-right">38Km/h</p>
-                <p class="print-left">-33.405785</p><p class="print-right">-70.541643</p>
-                <hr>
-                <p class="print-left">11:30:23</p><p class="print-right">40Km/h</p>
-                <p class="print-left">-33.406015</p><p class="print-right">-70.542745</p>
-                <hr>
-                <p class="print-left">11:30:15</p><p class="print-right">43Km/h</p>
-                <p class="print-left">-33.406387</p><p class="print-right">-70.543847</p>
             </span>
         </div>
         <button onclick="printRawBT()" class="btn-confirm">Imprimir</button>
@@ -130,7 +115,7 @@
             .then(response => response.json())
             .then(data => {
                 // Si no hay datos
-                if(!data.report.sheets[0].sections[0].data){
+                if(data.success==false||!data.report.sheets[0].sections[0].data){
                     //Desactivado temporalmente
                     //window.alert("No hay registros!");
                     logcontent.textContent = "";
@@ -157,9 +142,9 @@
                     }
                     nombre.textContent = nombreCond;
                     rut.textContent = data.driver.rut;
-                } else { // De lo contrario blanqueamos los datos
-                    nombre.textContent = "";
-                    rut.textContent = "";
+                } else { // De lo contrario
+                    nombre.textContent = "Sin datos";
+                    rut.textContent = "Sin datos";
                 }
 
                 // datos básicos
