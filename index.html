@@ -66,8 +66,8 @@
         async function printRawBT(){
             if(dataArr){
                 var btext = divider;
-                btext += nombre.textContent + "            " + patente.textContent + "\n";
-                btext += rut.textContent + "         " + fecha.textContent + "\n";
+                btext += toColumn(nombre.textContent,patente.textContent);
+                btext += toColumn(rut.textContent,fecha.textContent);
                 for(let i = 0;i<5;i++){
                     if(dataArr[i]){
                         btext += divider;
@@ -84,28 +84,28 @@
                 window.location.href = btext;
             } else { // Imprimir datos falsos
                 var btext = divider;
-                btext += nombre.textContent + "            " + patente.textContent + "\n";
-                btext += rut.textContent + "         " + fecha.textContent + "\n";
+                btext += toColumn(nombre.textContent,patente.textContent);
+                btext += toColumn(rut.textContent,fecha.textContent);
 
                     btext += divider;
-                    btext += "11:30:52" + "               " + "42Km/h" + "\n";
-                    btext += "-33.405297" + " , " + "-70.539448" + "\n";
+                    btext += toColumn("11:30:52","42Km/h");
+                    btext += toColumn("-33.405297","-70.539448");
 
                     btext += divider;
-                    btext += "11:30:40" + "               " + "35Km/h" + "\n";
-                    btext += "-33.405542" + " , " + "-70.540527" + "\n";
+                    btext += toColumn("11:30:40","35Km/h");
+                    btext += toColumn("-33.405542","-70.540527");
 
                     btext += divider;
-                    btext += "11:30:31" + "               " + "38Km/h" + "\n";
-                    btext += "-33.405785" + " , " + "-70.541643" + "\n";
+                    btext += toColumn("11:30:31","38Km/h");
+                    btext += toColumn("-33.405785","-70.541643");
 
                     btext += divider;
-                    btext += "11:30:23" + "               " + "40Km/h" + "\n";
-                    btext += "-33.406015" + " , " + "-70.542745" + "\n";
+                    btext += toColumn("11:30:23","40Km/h");
+                    btext += toColumn("-33.406015","-70.542745");
 
                     btext += divider;
-                    btext += "11:30:15" + "               " + "43Km/h" + "\n";
-                    btext += "-33.406387" + " , " + "-70.543847" + "\n";
+                    btext += toColumn("11:30:15","43Km/h");
+                    btext += toColumn("-33.406387","-70.543847");
 
                 btext = toBT(btext);
                 console.log(btext);
