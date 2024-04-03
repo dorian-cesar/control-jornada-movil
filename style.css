@@ -43,8 +43,8 @@ h1 {
     background-color: #fff;
     box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.3);
     font-family: courier, monospace;
-    min-height: 280px;
-    max-height: 280px;
+    min-height: 295px;
+    max-height: 295px;
     overflow-y: auto;
 }
 .dash-container {
