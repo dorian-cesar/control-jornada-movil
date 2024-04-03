@@ -11,24 +11,12 @@
         <h1>Ultimos Registros</h1>
         <div id="card-container" class="log-container">
             <hr>
-            <b style="font-weight: 800;"><p class="print-left">Juan Perez</p><p id="log-patente" class="print-right">LGJW-26</p></b>
-            <p class="print-left">18452182-4</p><p id="log-fecha" class="print-right">10/05/2024</p>
+            <b style="font-weight: 800;"><p id="log-nombre" class="print-left">Juan Perez</p><p id="log-patente" class="print-right">LGJW-26</p></b>
+            <p id="log-rut" class="print-left">18452182-4</p><p id="log-fecha" class="print-right">10/05/2024</p>
             <span id="log-content" class="eventos">
                 <hr>
                 <p id="log-0-hora" class="print-left">10:50</p><p id="log-0-speed" class="print-right">42Km/h</p>
                 <p id="log-0-lat" class="print-left">-33.408035</p><p id="log-0-lng" class="print-right">-70.5549716</p>
-                <hr>
-                <p id="log-1-hora" class="print-left">10:50</p><p id="log-1-speed" class="print-right">42Km/h</p>
-                <p id="log-1-lat" class="print-left">-33.408035</p><p id="log-1-lng" class="print-right">-70.5549716</p>
-                <hr>
-                <p id="log-2-hora" class="print-left">10:50</p><p id="log-2-speed" class="print-right">42Km/h</p>
-                <p id="log-2-lat" class="print-left">-33.408035</p><p id="log-2-lng" class="print-right">-70.5549716</p>
-                <hr>
-                <p id="log-3-hora" class="print-left">10:50</p><p id="log-3-speed" class="print-right">42Km/h</p>
-                <p id="log-3-lat" class="print-left">-33.408035</p><p id="log-3-lng" class="print-right">-70.5549716</p>
-                <hr>
-                <p id="log-4-hora" class="print-left">10:50</p><p id="log-4-speed" class="print-right">42Km/h</p>
-                <p id="log-4-lat" class="print-left">-33.408035</p><p id="log-4-lng" class="print-right">-70.5549716</p>
             </span>
         </div>
         <input class="input-patente" type="text" name="patente" id="selveh" placeholder="LGJW-22" value="LGJW-22" />
@@ -48,21 +36,39 @@
     <script src="common.js"></script>
     <script>
         var cardText = document.getElementById("card-container");
+        var nombre = document.getElementById("log-nombre");
         var patente = document.getElementById("log-patente");
+        var rut = document.getElementById("log-rut");
         var fecha = document.getElementById("log-fecha");
         var logcontent = document.getElementById("log-content");
         var vehsel = document.getElementById("selveh");
         var loadScreen = document.getElementById("loadScreen");
 
+        var dataArr = null;
 
+        loadData();
 
         function fakeLogout(){
             window.location.href = "index.html";
         }
         async function printRawBT(){
-            var testText = toBT(cardText.innerText);
-            console.log(testText);
-            window.location.href = testText;
+            if(dataArr){
+                var btext = divider;
+                btext += nombre.textContent + "            " + patente.textContent + "\n";
+                btext += rut.textContent + "         " + fecha.textContent + "\n";
+                btext += divider;
+                for(let i = 0;i<5;i++){
+                    let horaStr = dataArr[i].date.v.split(" ")[1]; //To-Do remover split
+                    let speedStr = dataArr[i].speed.v+"Km/h";
+                    let latStr = dataArr[i].lat.v;
+                    let lngStr = dataArr[i].lng.v;
+                    btext += horaStr + "               " + speedStr + "\n";
+                    btext += latStr + " , " + lngStr + "\n";
+                }
+                btext = toBT(btext);
+                console.log(btext);
+                window.location.href = btext;
+            }
         }
         async function loadData(){
             let vehpat = vehsel.value;
@@ -72,6 +78,8 @@
             .then(data => {
                 loadScreen.style.display = "none";
                 const logs = data.report.sheets[0].sections[0].data[0].rows;
+
+                dataArr = logs.reverse();
 
                 patente.textContent = data.report.sheets[0].header;
                 fecha.textContent = data.report.created.split(" ")[0];
@@ -85,7 +93,7 @@
                     logcnt = logs.length*-1;
                 }*/
 
-                logs.reverse().forEach(item => {
+                dataArr.forEach(item => {
                     var logHR = document.createElement("hr");
                     var logHour = document.createElement("p");
                     var logSpeed = document.createElement("p");

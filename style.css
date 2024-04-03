@@ -121,6 +121,9 @@ h1 {
     text-align: center;
     box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.3);
 }
+.input-patente:focus {
+    background-color: #fdffa5;
+}
 .btn-container {
     width: 362px;
     max-width: 96vw;
@@ -140,6 +143,9 @@ h1 {
     box-sizing: border-box;
     font-weight: bold;
     box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.3);
+}
+.btn-half:focus {
+    background-color: #faf174;
 }
 .modal-bg {
     display: none;
