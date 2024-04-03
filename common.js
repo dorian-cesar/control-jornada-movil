@@ -6,8 +6,11 @@ sidebarToggle.addEventListener('click', () => {
     sidebarToggle.classList.toggle('active');
 });*/
 
+// Repite el caracter 29 veces para crear un divisor
 const divider = "-".repeat(29)+"\n";
 
+// Imprime texto en columna izquiera y derecha, calculando el espaciado
+// Si uno de los textos supera los 14 caracteres, se corta
 function toColumn(left,right){
     if(left.length>14){
         left = left.substring(0,14);
@@ -19,16 +22,18 @@ function toColumn(left,right){
     return left + " ".repeat(space) + right + "\n";
 }
 
+// Imprime a la izquierda y agrega nueva linea
 function toLeft(input){
-    const space = 29-(input.length);
-    return input + " ".repeat(space) + "\n";
+    return input + "\n";
 }
 
+// Imprime a la derecha calculando el espacio
 function toRight(input){
     const space = 29-(input.length);
     return " ".repeat(space) + input + "\n";
 }
 
+// Convierte un string a una referencia valida de RawBT
 function toBT(input) {
     var output = "rawbt:" + input;
     output = output.replaceAll(" ", "%20");

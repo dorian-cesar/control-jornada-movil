@@ -62,15 +62,14 @@
 
         //loadData();
 
-        function fakeLogout(){
-            window.location.href = "index.html";
-        }
+        // Imprime todos los datos en el POS
         async function printRawBT(){
             if(dataArr){
                 var btext = divider;
                 btext += toColumn(nombre.textContent,patente.textContent);
                 btext += toColumn(rut.textContent,fecha.textContent);
                 btext += toLeft(logstatus.textContent);
+                // Para los ultimos 5 registros
                 for(let i = 0;i<5;i++){
                     if(dataArr[i]){
                         btext += divider;
@@ -83,7 +82,7 @@
                     }
                 }
                 btext = toBT(btext);
-                console.log(btext);
+                // Imprimir a traves de RawBT
                 window.location.href = btext;
             } else {
                 window.alert("Nada que imprimir");
@@ -119,16 +118,18 @@
             }
         }
         async function loadData(){
+            // Validar que vehpat tenga algo escrito
             let vehpat = vehsel.value;
             if(!vehpat){
                 vehsel.focus();
                 return;
             }
-            console.log(vehpat);
+            // Habilitamos la pantalla de carga
             loadScreen.style.display = "block";
             let data = await fetch("https://dev.wit.la/api/gpshist/"+vehpat)
             .then(response => response.json())
             .then(data => {
+                // Si no hay datos
                 if(!data.report.sheets[0].sections[0].data){
                     //Desactivado temporalmente
                     //window.alert("No hay registros!");
@@ -141,11 +142,14 @@
                     loadScreen.style.display = "none";
                     return;
                 }
+                // Desactivamos la pantalla de carga
                 loadScreen.style.display = "none";
                 const logs = data.report.sheets[0].sections[0].data[0].rows;
 
+                // Creamos un array con los datos en direccion inversa
                 dataArr = logs.reverse();
 
+                // Si tenemos un conductor, imprimir su nombre y rut
                 if(data.driver){
                     let nombreCond = data.driver.nombre;
                     if(nombreCond.length>14){
@@ -153,51 +157,47 @@
                     }
                     nombre.textContent = nombreCond;
                     rut.textContent = data.driver.rut;
-                } else {
-                    nombre.textContent = "Juan Perez";
-                    rut.textContent = "18452182-4";
+                } else { // De lo contrario blanqueamos los datos
+                    nombre.textContent = "";
+                    rut.textContent = "";
                 }
+
+                // datos básicos
                 patente.textContent = data.report.sheets[0].header;
                 fecha.textContent = data.report.created.split(" ")[0];
                 logstatus.textContent = dataArr[0].status.v;
 
+                // Limpiamos el contenido del preview
                 logcontent.textContent = "";
 
-                /* Para limitar la cantidad de registros
-                var logcnt = -5;
-
-                if(logs.length<5) {
-                    logcnt = logs.length*-1;
-                }*/
-
                 dataArr.forEach(item => {
+                    // Creamos elementos
                     var logHR = document.createElement("hr");
                     var logHour = document.createElement("p");
                     var logSpeed = document.createElement("p");
                     var logLat = document.createElement("p");
                     var logLng = document.createElement("p");
 
+                    // Asignamos valores
                     logHour.textContent = item.date.v.split(" ")[1];
                     logSpeed.textContent = item.speed.v+"Km/h";
                     logLat.textContent = item.lat.v;
                     logLng.textContent = item.lng.v;
 
+                    // Asignamos clases
                     logHour.classList.add("print-left");
                     logLat.classList.add("print-left");
 
                     logSpeed.classList.add("print-right");
                     logLng.classList.add("print-right");
 
+                    // Insertamos en el arbol de html
                     logcontent.appendChild(logHR);
                     logcontent.appendChild(logHour);
                     logcontent.appendChild(logSpeed);
                     logcontent.appendChild(logLat);
                     logcontent.appendChild(logLng);
                 });
-                
-                // TO DO
-                // Pantalla de carga, mover botones, ajustar log al mismo tamaño de los botones, oscurecer sombra
-
             })
             .catch(error => {
                 loadScreen.style.display = "none";
