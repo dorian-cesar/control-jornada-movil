@@ -9,6 +9,12 @@ sidebarToggle.addEventListener('click', () => {
 const divider = "-".repeat(29)+"\n";
 
 function toColumn(left,right){
+    if(left.length>14){
+        left = left.substring(0,14);
+    }
+    if(right.length>14){
+        right = right.substring(0,14);
+    }
     const space = 29-(left.length+right.length);
     return left + " ".repeat(space) + right + "\n";
 }
