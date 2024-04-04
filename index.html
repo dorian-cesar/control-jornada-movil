@@ -17,7 +17,9 @@
             <hr>
             <b style="font-weight: 800;"><p id="log-nombre" class="print-left"> </p><p id="log-patente" class="print-right"> </p></b>
             <p id="log-rut" class="print-left"> </p><p id="log-fecha" class="print-right"> </p>
-            <span id="log-status"> </span>
+            <p id="log-nfchour"> </p>
+            <p id="log-nfc"> </p>
+            <p id="log-status"> </p>
             <span id="log-content" class="eventos">
             </span>
         </div>
@@ -40,6 +42,8 @@
         var fecha = document.getElementById("log-fecha");
         var logcontent = document.getElementById("log-content");
         var logstatus = document.getElementById("log-status");
+        var nfc = document.getElementById("log-nfc");
+        var nfchour = document.getElementById("log-nfchour");
         var vehsel = document.getElementById("selveh");
         var loadScreen = document.getElementById("loadScreen");
 
@@ -53,6 +57,8 @@
                 var btext = divider;
                 btext += toColumn(nombre.textContent,patente.textContent);
                 btext += toColumn(rut.textContent,fecha.textContent);
+                btext += toLeft(nfchour.textContent);
+                btext += toLeft(nfc.textContent);
                 btext += toLeft(logstatus.textContent);
                 // Para los ultimos 5 registros
                 for(let i = 0;i<5;i++){
@@ -134,8 +140,12 @@
                 // Creamos un array con los datos en direccion inversa
                 dataArr = logs.reverse();
 
+                var condNFC = null;
+                var condNFCHour = null;
+
                 // Si tenemos un conductor, imprimir su nombre y rut
                 if(data.driver){
+                    console.log(data.driver);
                     // Apellido
                     let nombreCond = data.driver.current.last_name;
                     // Primer Nombre
@@ -148,7 +158,9 @@
                         nombreCond = nombreCond.substring(0,14);
                     }
                     nombre.textContent = nombreCond;
-                    rut.textContent = data.driver.current.id;
+                    rut.textContent = data.driver.current.personnel_number;
+                    condNFC = data.driver.current.hardware_key;
+                    condNFCHour = data.driver.last_change.changed.split(" ")[1];
                 } else { // De lo contrario
                     nombre.textContent = "Sin datos";
                     rut.textContent = "Sin datos";
@@ -158,6 +170,11 @@
                 patente.textContent = data.report.sheets[0].header;
                 fecha.textContent = data.report.created.split(" ")[0];
                 logstatus.textContent = dataArr[0].status.v;
+                nfchour.textContent = "Últ. Conexión: " + condNFCHour;
+
+                if(condNFC) {
+                    nfc.textContent = "Tarjeta: " + condNFC;
+                }
 
                 // Limpiamos el contenido del preview
                 logcontent.textContent = "";
@@ -188,6 +205,7 @@
                     logcontent.appendChild(logHour);
                     logcontent.appendChild(logSpeed);
                     logcontent.appendChild(logLat);
+                    logcontent.appendChild(logLng);
                     logcontent.appendChild(logLng);
                 });
             })
