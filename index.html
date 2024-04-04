@@ -111,7 +111,7 @@
             }
             // Habilitamos la pantalla de carga
             loadScreen.style.display = "block";
-            let data = await fetch("https://dev.wit.la/api/gpshist/"+vehpat)
+            let data = await fetch("http://10.5.20.91:8000/api/gpshist/"+vehpat)
             .then(response => response.json())
             .then(data => {
                 // Si no hay datos
@@ -136,12 +136,19 @@
 
                 // Si tenemos un conductor, imprimir su nombre y rut
                 if(data.driver){
-                    let nombreCond = data.driver.nombre;
+                    // Apellido
+                    let nombreCond = data.driver.current.last_name;
+                    // Primer Nombre
+                    nombreCond += " " + data.driver.current.first_name;
+                    // Segundo Nombre (Opcional)
+                    if(data.driver.current.middle_name) {
+                        nombreCond += " " + data.driver.current.middle_name.substring(0,1) + ".";
+                    }
                     if(nombreCond.length>14){
                         nombreCond = nombreCond.substring(0,14);
                     }
                     nombre.textContent = nombreCond;
-                    rut.textContent = data.driver.rut;
+                    rut.textContent = data.driver.current.id;
                 } else { // De lo contrario
                     nombre.textContent = "Sin datos";
                     rut.textContent = "Sin datos";
