@@ -7,7 +7,7 @@ sidebarToggle.addEventListener('click', () => {
 });*/
 
 // Repite el caracter 29 veces para crear un divisor
-const divider = "─".repeat(29)+"\n";
+const divider = "-".repeat(29)+"\n";
 
 // Imprime texto en columna izquiera y derecha, calculando el espaciado
 // Si uno de los textos supera los 14 caracteres, se corta
