@@ -12,6 +12,9 @@ const divider = "-".repeat(29)+"\n";
 // Imprime texto en columna izquiera y derecha, calculando el espaciado
 // Si uno de los textos supera los 14 caracteres, se corta
 function toColumn(left,right){
+    if(!left||!right) {
+        return "\n";
+    }
     if(left.length>14){
         left = left.substring(0,14);
     }
@@ -24,11 +27,17 @@ function toColumn(left,right){
 
 // Imprime a la izquierda y agrega nueva linea
 function toLeft(input){
+    if(!input) {
+        return "\n";
+    }
     return input + "\n";
 }
 
 // Imprime a la derecha calculando el espacio
 function toRight(input){
+    if(!input) {
+        return "\n";
+    }
     const space = 29-(input.length);
     return " ".repeat(space) + input + "\n";
 }

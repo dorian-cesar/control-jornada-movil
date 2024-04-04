@@ -9,11 +9,13 @@
 <body>
     <div class="container">
         <h1>Control en ruta</h1>
-        <div class="btn-container">
+        <form onsubmit="makePre(event)" class="btn-container">
             <input oninput="this.value = this.value.toUpperCase()" class="input-patente" type="text" name="patente" id="selveh" placeholder="Ingrese patente"/>
-            <button onclick="loadData()" class="btn-half">Cargar datos</button>
-        </div>
+            <button type="submit" class="btn-half">Cargar datos</button>
+        </form>
         <div id="card-container" class="log-container">
+            <pre id="pre-data"></pre>
+            <!--
             <hr>
             <b style="font-weight: 800;"><p id="log-nombre" class="print-left"> </p><p id="log-patente" class="print-right"> </p></b>
             <p id="log-rut" class="print-left"> </p><p id="log-fecha" class="print-right"> </p>
@@ -22,6 +24,7 @@
             <p id="log-status"> </p>
             <span id="log-content" class="eventos">
             </span>
+            -->
         </div>
         <button onclick="printRawBT()" class="btn-confirm">Imprimir</button>
         
@@ -35,6 +38,8 @@
     </div>
     <script src="common.js"></script>
     <script>
+        var preData = document.getElementById("pre-data");
+        /*
         var cardText = document.getElementById("card-container");
         var nombre = document.getElementById("log-nombre");
         var patente = document.getElementById("log-patente");
@@ -43,7 +48,7 @@
         var logcontent = document.getElementById("log-content");
         var logstatus = document.getElementById("log-status");
         var nfc = document.getElementById("log-nfc");
-        var nfchour = document.getElementById("log-nfchour");
+        var nfchour = document.getElementById("log-nfchour");*/
         var vehsel = document.getElementById("selveh");
         var loadScreen = document.getElementById("loadScreen");
 
@@ -53,60 +58,78 @@
 
         // Imprime todos los datos en el POS
         async function printRawBT(){
-            if(dataArr){
-                var btext = divider;
-                btext += toColumn(nombre.textContent,patente.textContent);
-                btext += toColumn(rut.textContent,fecha.textContent);
-                btext += toLeft(nfchour.textContent);
-                btext += toLeft(nfc.textContent);
-                btext += toLeft(logstatus.textContent);
-                // Para los ultimos 5 registros
-                for(let i = 0;i<5;i++){
-                    if(dataArr[i]){
-                        btext += divider;
-                        let horaStr = dataArr[i].date.v.split(" ")[1]; //To-Do remover split
-                        let speedStr = dataArr[i].speed.v+"Km/h";
-                        let latStr = dataArr[i].lat.v;
-                        let lngStr = dataArr[i].lng.v;
-                        btext += toColumn(horaStr,speedStr);
-                        btext += toColumn(latStr,lngStr);
-                    }
-                }
-                btext = toBT(btext);
+            if(preData.textContent){
+                var btext = toBT(preData.textContent);
                 // Imprimir a traves de RawBT
                 window.location.href = btext;
             } else {
                 window.alert("Nada que imprimir");
                 return;
-                /*var btext = divider; // Datos falsos
-                btext += toColumn(nombre.textContent,patente.textContent);
-                btext += toColumn(rut.textContent,fecha.textContent);
-                btext += toLeft(logstatus.textContent);
-
-                    btext += divider;
-                    btext += toColumn("11:30:52","42Km/h");
-                    btext += toColumn("-33.405297","-70.539448");
-
-                    btext += divider;
-                    btext += toColumn("11:30:40","35Km/h");
-                    btext += toColumn("-33.405542","-70.540527");
-
-                    btext += divider;
-                    btext += toColumn("11:30:31","38Km/h");
-                    btext += toColumn("-33.405785","-70.541643");
-
-                    btext += divider;
-                    btext += toColumn("11:30:23","40Km/h");
-                    btext += toColumn("-33.406015","-70.542745");
-
-                    btext += divider;
-                    btext += toColumn("11:30:15","43Km/h");
-                    btext += toColumn("-33.406387","-70.543847");
-
-                btext = toBT(btext);
-                console.log(btext);
-                window.location.href = btext;*/
             }
+        }
+        async function makePre(e){
+            e.preventDefault();
+            let vehpat = vehsel.value;
+            if(!vehpat){
+                vehsel.focus();
+                return;
+            }
+            // Habilitamos la pantalla de carga
+            loadScreen.style.display = "block";
+            let data = await fetch("https://dev.wit.la/api/gpshist/"+vehpat)
+            .then(response => response.json())
+            .then(data => {
+                preData.textContent = "";
+                if(data.success==false||!data.report.sheets[0].sections[0].data){
+                    loadScreen.style.display = "none";
+                    preData.textContent = "No se han encontrado datos...";
+                    return;
+                }
+                const logs = data.report.sheets[0].sections[0].data[0].rows;
+                console.log(logs);
+                loadScreen.style.display = "none";
+                dataArr = logs.reverse();
+
+                // Primer Divisor
+                preData.textContent += divider;
+
+                //Nombres
+                if(data.driver) {
+                    // Apellido
+                    let nombreCond = data.driver.current.last_name;
+                    // Primer Nombre
+                    nombreCond += " " + data.driver.current.first_name;
+                    // Segundo Nombre (Opcional)
+                    if(data.driver.current.middle_name) {
+                        nombreCond += " " + data.driver.current.middle_name.substring(0,1) + ".";
+                    }
+                    if(nombreCond.length>29){
+                        nombreCond = nombreCond.substring(0,29);
+                    }
+
+                    preData.textContent += toLeft(nombreCond);
+                    preData.textContent += toLeft(data.driver.current.personnel_number);
+                    condNFC = data.driver.current.hardware_key;
+                    condNFCHour = data.driver.last_change.changed.split(" ")[1];
+                }
+
+                preData.textContent += toColumn(condNFC, condNFCHour);
+                preData.textContent += toColumn(data.report.sheets[0].header, data.report.created.split(" ")[0]);
+                preData.textContent += toLeft(dataArr[0].status.v);
+
+                for(let i = 0;i<5;i++){
+                    if(dataArr[i]){
+                        preData.textContent += divider;
+
+                        preData.textContent += toColumn(dataArr[i].date.v.split(" ")[1],dataArr[i].speed.v+"Km/h");
+                        preData.textContent += toColumn(dataArr[i].lat.v,dataArr[i].lng.v);
+                    }
+                };
+            })
+            .catch(error => {
+                loadScreen.style.display = "none";
+                console.error(error);
+            });
         }
         async function loadData(){
             // Validar que vehpat tenga algo escrito

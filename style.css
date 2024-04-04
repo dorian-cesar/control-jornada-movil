@@ -10,6 +10,13 @@ h1 {
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
+pre {
+    width: 29ch;
+    overflow: auto;
+    margin: auto;
+    font-family: courier, monospace;
+}
 .container {
     width: 100%;
     min-height: max-content;
