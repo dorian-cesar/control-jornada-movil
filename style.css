@@ -15,7 +15,7 @@ pre {
     width: 29ch;
     overflow: auto;
     margin: auto;
-    font-family: courier, monospace;
+    font-family: "Courier New", courier, monospace;
 }
 .container {
     width: 100%;

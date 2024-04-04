@@ -15,11 +15,11 @@ function toColumn(left,right){
     if(!left||!right) {
         return "\n";
     }
-    if(left.length>14){
-        left = left.substring(0,14);
+    if(left.length>18){
+        left = left.substring(0,18);
     }
-    if(right.length>14){
-        right = right.substring(0,14);
+    if(right.length>10){
+        right = right.substring(0,10);
     }
     const space = 29-(left.length+right.length);
     return left + " ".repeat(space) + right + "\n";
