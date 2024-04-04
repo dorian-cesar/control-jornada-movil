@@ -111,7 +111,7 @@
             }
             // Habilitamos la pantalla de carga
             loadScreen.style.display = "block";
-            let data = await fetch("http://10.5.20.91:8000/api/gpshist/"+vehpat)
+            let data = await fetch("https://dev.wit.la/api/gpshist/"+vehpat)
             .then(response => response.json())
             .then(data => {
                 // Si no hay datos
