@@ -36,7 +36,5 @@ function toRight(input){
 // Convierte un string a una referencia valida de RawBT
 function toBT(input) {
     var output = "rawbt:" + input;
-    output = output.replaceAll(" ", "%20");
-    output = output.replaceAll("\n", "%0A");
     return output;
 }
