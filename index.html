@@ -10,7 +10,7 @@
     <div class="container">
         <h1>Control en ruta</h1>
         <form onsubmit="makePre(event)" class="btn-container">
-            <input oninput="this.value = this.value.toUpperCase()" class="input-patente" type="text" name="patente" id="selveh" placeholder="Ingrese patente"/>
+            <input class="input-patente" type="text" name="patente" id="selveh" placeholder="Ingrese patente"/>
             <button type="submit" class="btn-half">Cargar datos</button>
         </form>
         <div id="card-container" class="log-container">
@@ -69,7 +69,7 @@
         }
         async function makePre(e){
             e.preventDefault();
-            let vehpat = vehsel.value;
+            let vehpat = vehsel.value.toUpperCase();
             if(!vehpat){
                 vehsel.focus();
                 return;
