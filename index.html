@@ -86,7 +86,6 @@
                     return;
                 }
                 const logs = data.report.sheets[0].sections[0].data[0].rows;
-                console.log(logs);
                 loadScreen.style.display = "none";
                 dataArr = logs.reverse();
 
@@ -209,7 +208,6 @@
 
                 // Si tenemos un conductor, imprimir su nombre y rut
                 if(data.driver){
-                    console.log(data.driver);
                     // Apellido
                     let nombreCond = data.driver.current.last_name;
                     // Primer Nombre

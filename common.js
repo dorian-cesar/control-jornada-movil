@@ -49,8 +49,6 @@ function toCenter(input){
         return "\n";
     }
     const space = (29-input.length)/2;
-    console.log(space);
-    console.log(input.length);
     return " ".repeat(space) + input + "\n";
 }
 
