@@ -102,10 +102,12 @@
                 //Patente
                 preData.textContent += toLeft("Patente: "+data.report.sheets[0].header);
 
+                var nombreCond = "";
+
                 //Nombres
                 if(data.driver) {
                     // Apellido
-                    let nombreCond = data.driver.current.last_name;
+                    nombreCond = data.driver.current.last_name;
                     // Primer Nombre
                     nombreCond += " " + data.driver.current.first_name;
                     // Segundo Nombre (Opcional)
@@ -116,8 +118,8 @@
                         nombreCond = nombreCond.substring(0,29);
                     }
 
-                    preData.textContent += toLeft("Nombre: "+nombreCond);
-                    preData.textContent += toLeft("Rut: "+data.driver.current.personnel_number);
+                    preData.textContent += toLeft("Nombre : " + nombreCond);
+                    preData.textContent += toLeft("Rut    : " + data.driver.current.personnel_number);
                     condNFC = data.driver.current.hardware_key;
                     condNFCHour = data.driver.last_change.changed.split(" ")[1];
                 }
@@ -130,7 +132,7 @@
                 preData.textContent += toCenter("Velocidad");
 
                 dataArr.forEach(item => {
-                    preData.textContent += toColumn(item.speed.v+" Km/h",item.date.v.split(" ")[1]);
+                    preData.textContent += toColumn(item.speed.v.padStart(2," ")+" Km/h",item.date.v.split(" ")[1]);
                 });
 
                 /*
@@ -142,6 +144,28 @@
                         preData.textContent += toColumn(dataArr[i].lat.v,dataArr[i].lng.v);
                     }
                 };*/
+                
+                // Firma 1
+                preData.textContent += signDiv;
+
+                /* Maqueta Termino de Conduccion
+
+                preData.textContent += toCenter("Termino de conducción");
+
+                // Fecha
+                preData.textContent += toCenter(data.report.created);
+
+                // Primer Divisor
+                preData.textContent += divider;
+
+                preData.textContent += toLeft("Nombre : " + nombreCond);
+                preData.textContent += toLeft("Rut    : " + data.driver.current.personnel_number);
+
+                //Patente
+                preData.textContent += toLeft("Patente: "+data.report.sheets[0].header);
+                
+                // Firma 2
+                preData.textContent += signDiv; */
             })
             .catch(error => {
                 loadScreen.style.display = "none";
