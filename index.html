@@ -90,6 +90,9 @@
                 loadScreen.style.display = "none";
                 dataArr = logs.reverse();
 
+                preData.textContent += toCenter("Reporte de conducción");
+                preData.textContent += "Ｒｅｐｏｒｔｅ　ｄｅ　Ｃｏｎｄｕｃｃｉｏｎ\n";
+                preData.textContent += toCenter("Últimos 5 minutos");
                 // Primer Divisor
                 preData.textContent += divider;
 
@@ -107,7 +110,7 @@
                         nombreCond = nombreCond.substring(0,29);
                     }
 
-                    preData.textContent += toLeft(nombreCond);
+                    preData.textContent += toCenter(nombreCond);
                     preData.textContent += toLeft(data.driver.current.personnel_number);
                     condNFC = data.driver.current.hardware_key;
                     condNFCHour = data.driver.last_change.changed.split(" ")[1];

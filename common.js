@@ -42,6 +42,16 @@ function toRight(input){
     return " ".repeat(space) + input + "\n";
 }
 
+function toCenter(input){
+    if(!input) {
+        return "\n";
+    }
+    const space = (29-input.length)/2;
+    console.log(space);
+    console.log(input.length);
+    return " ".repeat(space) + input + "\n";
+}
+
 // Convierte un string a una referencia valida de RawBT
 function toBT(input) {
     var output = "rawbt:" + input;
