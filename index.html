@@ -91,10 +91,16 @@
                 dataArr = logs.reverse();
 
                 preData.textContent += toCenter("Reporte de conducción");
-                preData.textContent += "Ｒｅｐｏｒｔｅ　ｄｅ　Ｃｏｎｄｕｃｃｉｏｎ\n";
-                preData.textContent += toCenter("Últimos 5 minutos");
+                preData.textContent += toCenter("Últimos 10 minutos");
+
+                // Fecha
+                preData.textContent += toCenter(data.report.created);
+
                 // Primer Divisor
                 preData.textContent += divider;
+
+                //Patente
+                preData.textContent += toLeft("Patente: "+data.report.sheets[0].header);
 
                 //Nombres
                 if(data.driver) {
@@ -110,16 +116,24 @@
                         nombreCond = nombreCond.substring(0,29);
                     }
 
-                    preData.textContent += toCenter(nombreCond);
-                    preData.textContent += toLeft(data.driver.current.personnel_number);
+                    preData.textContent += toLeft("Nombre: "+nombreCond);
+                    preData.textContent += toLeft("Rut: "+data.driver.current.personnel_number);
                     condNFC = data.driver.current.hardware_key;
                     condNFCHour = data.driver.last_change.changed.split(" ")[1];
                 }
 
-                preData.textContent += toColumn(condNFC, condNFCHour);
-                preData.textContent += toColumn(data.report.sheets[0].header, data.report.created.split(" ")[0]);
+                //preData.textContent += toLeft(condNFC);
+                //preData.textContent += toLeft(condNFCHour);
                 preData.textContent += toLeft(dataArr[0].status.v);
 
+                preData.textContent += divider;
+                preData.textContent += toCenter("Velocidad");
+
+                dataArr.forEach(item => {
+                    preData.textContent += toColumn(item.speed.v+" Km/h",item.date.v.split(" ")[1]);
+                });
+
+                /*
                 for(let i = 0;i<5;i++){
                     if(dataArr[i]){
                         preData.textContent += divider;
@@ -127,7 +141,7 @@
                         preData.textContent += toColumn(dataArr[i].date.v.split(" ")[1],dataArr[i].speed.v+"Km/h");
                         preData.textContent += toColumn(dataArr[i].lat.v,dataArr[i].lng.v);
                     }
-                };
+                };*/
             })
             .catch(error => {
                 loadScreen.style.display = "none";
