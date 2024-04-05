@@ -9,7 +9,7 @@ sidebarToggle.addEventListener('click', () => {
 // Repite el caracter 29 veces para crear un divisor
 const divider = toCenter("—".repeat(29));
 
-const signDiv = "\n\n" + divider + toCenter("Firma") + "\n";
+const signDiv = "\n\n\n" + divider + toCenter("Firma") + "\n";
 
 // Imprime texto en columna izquiera y derecha, calculando el espaciado
 // Si uno de los textos supera los 14 caracteres, se corta
