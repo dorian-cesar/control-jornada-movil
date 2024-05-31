@@ -1,64 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Control en ruta</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
+
 <body>
     <div class="container">
-        <h1>Control en ruta</h1>
+        <h1>Reporte de conducción (5min)</h1>
         <form onsubmit="makePre(event)" class="btn-container">
-            <input class="input-patente" type="text" name="patente" id="selveh" placeholder="Ingrese patente"/>
+            <input class="input-patente" type="text" name="patente" id="selveh" placeholder="Ingrese patente" />
             <button type="submit" class="btn-half">Cargar datos</button>
         </form>
         <div id="card-container" class="log-container">
             <pre id="pre-data"></pre>
-            <!--
-            <hr>
-            <b style="font-weight: 800;"><p id="log-nombre" class="print-left"> </p><p id="log-patente" class="print-right"> </p></b>
-            <p id="log-rut" class="print-left"> </p><p id="log-fecha" class="print-right"> </p>
-            <p id="log-nfchour"> </p>
-            <p id="log-nfc"> </p>
-            <p id="log-status"> </p>
-            <span id="log-content" class="eventos">
-            </span>
-            -->
         </div>
         <button onclick="printRawBT()" class="btn-confirm">Imprimir</button>
-        
+
         <div id="loadScreen" class="modal-bg">
             <span>
                 <h1></h1>
                 <h3>Cargando</h3>
             </span>
         </div>
-        
+
     </div>
     <script src="common.js"></script>
     <script>
+        var Patente = getParameterByName('patente')
+
+        if (Patente) {
+                $('#selveh').val(Patente);
+            }
+        
+        console.log(Patente)
         var preData = document.getElementById("pre-data");
-        /*
-        var cardText = document.getElementById("card-container");
-        var nombre = document.getElementById("log-nombre");
-        var patente = document.getElementById("log-patente");
-        var rut = document.getElementById("log-rut");
-        var fecha = document.getElementById("log-fecha");
-        var logcontent = document.getElementById("log-content");
-        var logstatus = document.getElementById("log-status");
-        var nfc = document.getElementById("log-nfc");
-        var nfchour = document.getElementById("log-nfchour");*/
         var vehsel = document.getElementById("selveh");
+
         var loadScreen = document.getElementById("loadScreen");
+        
 
         var dataArr = null;
+        ;
+
+
+
+        function getParameterByName(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
 
         //loadData();
 
         // Imprime todos los datos en el POS
-        async function printRawBT(){
-            if(preData.textContent){
+        async function printRawBT() {
+            if (preData.textContent) {
                 var btext = toBT(preData.textContent);
                 // Imprimir a traves de RawBT
                 window.location.href = btext;
@@ -67,215 +69,216 @@
                 return;
             }
         }
-        async function makePre(e){
+        async function makePre(e) {
             e.preventDefault();
             let vehpat = vehsel.value.toUpperCase();
-            if(!vehpat){
+            if (!vehpat) {
                 vehsel.focus();
                 return;
             }
             // Habilitamos la pantalla de carga
             loadScreen.style.display = "block";
-            let data = await fetch("https://dev.wit.la/api/gpshist/"+vehpat)
-            .then(response => response.json())
-            .then(data => {
-                preData.textContent = "";
-                if(data.success==false||!data.report.sheets[0].sections[0].data){
+            let data = await fetch("https://dev.wit.la/api/gpshist/" + vehpat)
+                .then(response => response.json())
+                .then(data => {
+                    preData.textContent = "";
+                    if (data.success == false || !data.report.sheets[0].sections[0].data) {
+                        loadScreen.style.display = "none";
+                        preData.textContent = "No se han encontrado datos...";
+                        return;
+                    }
+                    const logs = data.report.sheets[0].sections[0].data[0].rows;
                     loadScreen.style.display = "none";
-                    preData.textContent = "No se han encontrado datos...";
-                    return;
-                }
-                const logs = data.report.sheets[0].sections[0].data[0].rows;
-                loadScreen.style.display = "none";
-                dataArr = logs.reverse();
+                    dataArr = logs.reverse();
 
-                preData.textContent += toCenter("Reporte de conducción");
-                preData.textContent += toCenter("Últimos 10 minutos");
+                    preData.textContent += toCenter("Reporte de conducción");
+                    preData.textContent += toCenter("Últimos 10 minutos");
 
-                // Fecha
-                preData.textContent += toCenter(data.report.created);
+                    // Fecha
+                    preData.textContent += toCenter(data.report.created);
 
-                // Primer Divisor
-                preData.textContent += divider;
+                    // Primer Divisor
+                    preData.textContent += divider;
 
-                //Patente
-                preData.textContent += toLeft("Patente: "+data.report.sheets[0].header);
+                    //Patente
+                    preData.textContent += toLeft("Patente: " + data.report.sheets[0].header);
 
-                var nombreCond = "";
+                    var nombreCond = "";
 
-                //Nombres
-                if(data.driver) {
-                    // Apellido
-                    nombreCond = data.driver.current.last_name;
-                    // Primer Nombre
-                    nombreCond += " " + data.driver.current.first_name;
-                    // Segundo Nombre (Opcional)
-                    if(data.driver.current.middle_name) {
-                        nombreCond += " " + data.driver.current.middle_name.substring(0,1) + ".";
+                    //Nombres
+                    if (data.driver) {
+                        // Apellido
+                        nombreCond = data.driver.current.last_name;
+                        // Primer Nombre
+                        nombreCond += " " + data.driver.current.first_name;
+                        // Segundo Nombre (Opcional)
+                        if (data.driver.current.middle_name) {
+                            nombreCond += " " + data.driver.current.middle_name.substring(0, 1) + ".";
+                        }
+                        if (nombreCond.length > 29) {
+                            nombreCond = nombreCond.substring(0, 29);
+                        }
+
+                        preData.textContent += toLeft("Nombre : " + nombreCond);
+                        preData.textContent += toLeft("Rut    : " + data.driver.current.personnel_number);
+                        condNFC = data.driver.current.hardware_key;
+                        condNFCHour = data.driver.last_change.changed.split(" ")[1];
                     }
-                    if(nombreCond.length>29){
-                        nombreCond = nombreCond.substring(0,29);
-                    }
 
+                    //preData.textContent += toLeft(condNFC);
+                    //preData.textContent += toLeft(condNFCHour);
+                    preData.textContent += toLeft(dataArr[0].status.v);
+
+                    preData.textContent += divider;
+                    preData.textContent += toCenter("Velocidad");
+
+                    dataArr.forEach(item => {
+                        preData.textContent += toColumn(item.speed.v.padStart(2, " ") + " Km/h", item.date.v.split(" ")[1]);
+                    });
+
+                    /*
+                    for(let i = 0;i<5;i++){
+                        if(dataArr[i]){
+                            preData.textContent += divider;
+    
+                            preData.textContent += toColumn(dataArr[i].date.v.split(" ")[1],dataArr[i].speed.v+"Km/h");
+                            preData.textContent += toColumn(dataArr[i].lat.v,dataArr[i].lng.v);
+                        }
+                    };*/
+
+                    // Firma 1
+                    preData.textContent += signDiv;
+
+                    /* Maqueta Termino de Conduccion
+    
+                    preData.textContent += toCenter("Termino de conducción");
+    
+                    // Fecha
+                    preData.textContent += toCenter(data.report.created);
+    
+                    // Primer Divisor
+                    preData.textContent += divider;
+    
                     preData.textContent += toLeft("Nombre : " + nombreCond);
                     preData.textContent += toLeft("Rut    : " + data.driver.current.personnel_number);
-                    condNFC = data.driver.current.hardware_key;
-                    condNFCHour = data.driver.last_change.changed.split(" ")[1];
-                }
-
-                //preData.textContent += toLeft(condNFC);
-                //preData.textContent += toLeft(condNFCHour);
-                preData.textContent += toLeft(dataArr[0].status.v);
-
-                preData.textContent += divider;
-                preData.textContent += toCenter("Velocidad");
-
-                dataArr.forEach(item => {
-                    preData.textContent += toColumn(item.speed.v.padStart(2," ")+" Km/h",item.date.v.split(" ")[1]);
+    
+                    //Patente
+                    preData.textContent += toLeft("Patente: "+data.report.sheets[0].header);
+                    
+                    // Firma 2
+                    preData.textContent += signDiv; */
+                })
+                .catch(error => {
+                    loadScreen.style.display = "none";
+                    console.error(error);
                 });
-
-                /*
-                for(let i = 0;i<5;i++){
-                    if(dataArr[i]){
-                        preData.textContent += divider;
-
-                        preData.textContent += toColumn(dataArr[i].date.v.split(" ")[1],dataArr[i].speed.v+"Km/h");
-                        preData.textContent += toColumn(dataArr[i].lat.v,dataArr[i].lng.v);
-                    }
-                };*/
-                
-                // Firma 1
-                preData.textContent += signDiv;
-
-                /* Maqueta Termino de Conduccion
-
-                preData.textContent += toCenter("Termino de conducción");
-
-                // Fecha
-                preData.textContent += toCenter(data.report.created);
-
-                // Primer Divisor
-                preData.textContent += divider;
-
-                preData.textContent += toLeft("Nombre : " + nombreCond);
-                preData.textContent += toLeft("Rut    : " + data.driver.current.personnel_number);
-
-                //Patente
-                preData.textContent += toLeft("Patente: "+data.report.sheets[0].header);
-                
-                // Firma 2
-                preData.textContent += signDiv; */
-            })
-            .catch(error => {
-                loadScreen.style.display = "none";
-                console.error(error);
-            });
         }
-        async function loadData(){
+        async function loadData() {
             // Validar que vehpat tenga algo escrito
             let vehpat = vehsel.value;
-            if(!vehpat){
+            if (!vehpat) {
                 vehsel.focus();
                 return;
             }
             // Habilitamos la pantalla de carga
             loadScreen.style.display = "block";
-            let data = await fetch("https://dev.wit.la/api/gpshist/"+vehpat)
-            .then(response => response.json())
-            .then(data => {
-                // Si no hay datos
-                if(data.success==false||!data.report.sheets[0].sections[0].data){
-                    //Desactivado temporalmente
-                    //window.alert("No hay registros!");
-                    logcontent.textContent = "";
-                    nombre.textContent = "Sin registros";
-                    patente.textContent = "";
-                    rut.textContent = "";
-                    fecha.textContent = "";
-                    logstatus.textContent = "";
+            let data = await fetch("https://dev.wit.la/api/gpshist/" + vehpat)
+                .then(response => response.json())
+                .then(data => {
+                    // Si no hay datos
+                    if (data.success == false || !data.report.sheets[0].sections[0].data) {
+                        //Desactivado temporalmente
+                        //window.alert("No hay registros!");
+                        logcontent.textContent = "";
+                        nombre.textContent = "Sin registros";
+                        patente.textContent = "";
+                        rut.textContent = "";
+                        fecha.textContent = "";
+                        logstatus.textContent = "";
+                        loadScreen.style.display = "none";
+                        return;
+                    }
+                    // Desactivamos la pantalla de carga
                     loadScreen.style.display = "none";
-                    return;
-                }
-                // Desactivamos la pantalla de carga
-                loadScreen.style.display = "none";
-                const logs = data.report.sheets[0].sections[0].data[0].rows;
+                    const logs = data.report.sheets[0].sections[0].data[0].rows;
 
-                // Creamos un array con los datos en direccion inversa
-                dataArr = logs.reverse();
+                    // Creamos un array con los datos en direccion inversa
+                    dataArr = logs.reverse();
 
-                var condNFC = null;
-                var condNFCHour = null;
+                    var condNFC = null;
+                    var condNFCHour = null;
 
-                // Si tenemos un conductor, imprimir su nombre y rut
-                if(data.driver){
-                    // Apellido
-                    let nombreCond = data.driver.current.last_name;
-                    // Primer Nombre
-                    nombreCond += " " + data.driver.current.first_name;
-                    // Segundo Nombre (Opcional)
-                    if(data.driver.current.middle_name) {
-                        nombreCond += " " + data.driver.current.middle_name.substring(0,1) + ".";
+                    // Si tenemos un conductor, imprimir su nombre y rut
+                    if (data.driver) {
+                        // Apellido
+                        let nombreCond = data.driver.current.last_name;
+                        // Primer Nombre
+                        nombreCond += " " + data.driver.current.first_name;
+                        // Segundo Nombre (Opcional)
+                        if (data.driver.current.middle_name) {
+                            nombreCond += " " + data.driver.current.middle_name.substring(0, 1) + ".";
+                        }
+                        if (nombreCond.length > 14) {
+                            nombreCond = nombreCond.substring(0, 14);
+                        }
+                        nombre.textContent = nombreCond;
+                        rut.textContent = data.driver.current.personnel_number;
+                        condNFC = data.driver.current.hardware_key;
+                        condNFCHour = data.driver.last_change.changed.split(" ")[1];
+                    } else { // De lo contrario
+                        nombre.textContent = "Sin datos";
+                        rut.textContent = "Sin datos";
                     }
-                    if(nombreCond.length>14){
-                        nombreCond = nombreCond.substring(0,14);
+
+                    // datos básicos
+                    patente.textContent = data.report.sheets[0].header;
+                    fecha.textContent = data.report.created.split(" ")[0];
+                    logstatus.textContent = dataArr[0].status.v;
+                    nfchour.textContent = "Últ. Conexión: " + condNFCHour;
+
+                    if (condNFC) {
+                        nfc.textContent = "Tarjeta: " + condNFC;
                     }
-                    nombre.textContent = nombreCond;
-                    rut.textContent = data.driver.current.personnel_number;
-                    condNFC = data.driver.current.hardware_key;
-                    condNFCHour = data.driver.last_change.changed.split(" ")[1];
-                } else { // De lo contrario
-                    nombre.textContent = "Sin datos";
-                    rut.textContent = "Sin datos";
-                }
 
-                // datos básicos
-                patente.textContent = data.report.sheets[0].header;
-                fecha.textContent = data.report.created.split(" ")[0];
-                logstatus.textContent = dataArr[0].status.v;
-                nfchour.textContent = "Últ. Conexión: " + condNFCHour;
+                    // Limpiamos el contenido del preview
+                    logcontent.textContent = "";
 
-                if(condNFC) {
-                    nfc.textContent = "Tarjeta: " + condNFC;
-                }
+                    dataArr.forEach(item => {
+                        // Creamos elementos
+                        var logHR = document.createElement("hr");
+                        var logHour = document.createElement("p");
+                        var logSpeed = document.createElement("p");
+                        var logLat = document.createElement("p");
+                        var logLng = document.createElement("p");
 
-                // Limpiamos el contenido del preview
-                logcontent.textContent = "";
+                        // Asignamos valores
+                        logHour.textContent = item.date.v.split(" ")[1];
+                        logSpeed.textContent = item.speed.v + "Km/h";
+                        logLat.textContent = item.lat.v;
+                        logLng.textContent = item.lng.v;
 
-                dataArr.forEach(item => {
-                    // Creamos elementos
-                    var logHR = document.createElement("hr");
-                    var logHour = document.createElement("p");
-                    var logSpeed = document.createElement("p");
-                    var logLat = document.createElement("p");
-                    var logLng = document.createElement("p");
+                        // Asignamos clases
+                        logHour.classList.add("print-left");
+                        logLat.classList.add("print-left");
 
-                    // Asignamos valores
-                    logHour.textContent = item.date.v.split(" ")[1];
-                    logSpeed.textContent = item.speed.v+"Km/h";
-                    logLat.textContent = item.lat.v;
-                    logLng.textContent = item.lng.v;
+                        logSpeed.classList.add("print-right");
+                        logLng.classList.add("print-right");
 
-                    // Asignamos clases
-                    logHour.classList.add("print-left");
-                    logLat.classList.add("print-left");
-
-                    logSpeed.classList.add("print-right");
-                    logLng.classList.add("print-right");
-
-                    // Insertamos en el arbol de html
-                    logcontent.appendChild(logHR);
-                    logcontent.appendChild(logHour);
-                    logcontent.appendChild(logSpeed);
-                    logcontent.appendChild(logLat);
-                    logcontent.appendChild(logLng);
-                    logcontent.appendChild(logLng);
+                        // Insertamos en el arbol de html
+                        logcontent.appendChild(logHR);
+                        logcontent.appendChild(logHour);
+                        logcontent.appendChild(logSpeed);
+                        logcontent.appendChild(logLat);
+                        logcontent.appendChild(logLng);
+                        logcontent.appendChild(logLng);
+                    });
+                })
+                .catch(error => {
+                    loadScreen.style.display = "none";
+                    console.error(error);
                 });
-            })
-            .catch(error => {
-                loadScreen.style.display = "none";
-                console.error(error);
-            });
         }
     </script>
 </body>
+
 </html>
