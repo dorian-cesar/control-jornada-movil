@@ -11,15 +11,19 @@
 
 <body>
     <div class="container">
-        <h1>Reporte de conducción (5min)</h1>
+        <h1>Reporte de conducción (10 min)</h1>
+        <div id="selveh" class="btn-label">hola</div>
         <form onsubmit="makePre(event)" class="btn-container">
-            <input class="input-patente" type="text" name="patente" id="selveh" placeholder="Ingrese patente" />
-            <button type="submit" class="btn-half">Cargar datos</button>
+            <!-- <input class="input-patente" type="text" name="patente" id="selveh" placeholder="Ingrese patente" /> -->
+            
+            <button type="submit" class="btn-confirm">Cargar datos</button>
         </form>
         <div id="card-container" class="log-container">
             <pre id="pre-data"></pre>
         </div>
         <button onclick="printRawBT()" class="btn-confirm">Imprimir</button>
+        <button onclick="exit()" class="btn-confirm2">Volver</button>
+        
 
         <div id="loadScreen" class="modal-bg">
             <span>
@@ -31,13 +35,34 @@
     </div>
     <script src="common.js"></script>
     <script>
-        var Patente = getParameterByName('patente')
+        var Patente = getParameterByName('patente');
+        var conductor = getParameterByName('conductor');
 
-        if (Patente) {
-                $('#selveh').val(Patente);
+        function exit(){
+            window.location.href ='https://control-ruta.netlify.app/'
+        }
+
+        if (Patente && conductor) {
+                $('#selveh').text('Bus: '+Patente+ '- Conductor: ' + conductor);
             }
         
-        console.log(Patente)
+            $.ajax({
+                        url: 'https://control-jornada.wit.la/backend-control-jornada/public/api/driver/name/' + conductor,
+                        method: 'GET',
+                        success: function(response) {
+                            nombreConductor= (response.nombre);
+                            
+                        },
+                        error: function(xhr) {
+                            if (xhr.status === 404) {
+                                alert('Rut no encontrado');
+                            } else {
+                               alert('error');
+                            }
+                        }
+                    });  
+
+        
         var preData = document.getElementById("pre-data");
         var vehsel = document.getElementById("selveh");
 
@@ -47,14 +72,19 @@
         var dataArr = null;
         ;
 
-
-
         function getParameterByName(name) {
+                var url = new URL(window.location.href);
+                console.log(url);
+                return url.searchParams.get(name);
+            }
+
+       /* function getParameterByName(name) {
             name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
             var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
                 results = regex.exec(location.search);
             return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
         }
+            */
 
         //loadData();
 
@@ -71,7 +101,7 @@
         }
         async function makePre(e) {
             e.preventDefault();
-            let vehpat = vehsel.value.toUpperCase();
+            let vehpat = Patente.toUpperCase();
             if (!vehpat) {
                 vehsel.focus();
                 return;
@@ -92,7 +122,7 @@
                     dataArr = logs.reverse();
 
                     preData.textContent += toCenter("Reporte de conducción");
-                    preData.textContent += toCenter("Últimos 10 minutos");
+                    preData.textContent += toCenter("Últimos 5 minutos");
 
                     // Fecha
                     preData.textContent += toCenter(data.report.created);
@@ -119,8 +149,9 @@
                             nombreCond = nombreCond.substring(0, 29);
                         }
 
-                        preData.textContent += toLeft("Nombre : " + nombreCond);
-                        preData.textContent += toLeft("Rut    : " + data.driver.current.personnel_number);
+                        preData.textContent += toLeft("Nombre : " + nombreConductor);
+                       // preData.textContent += toLeft("Rut    : " + data.driver.current.personnel_number);
+                        preData.textContent += toLeft("Rut    : " + conductor);
                         condNFC = data.driver.current.hardware_key;
                         condNFCHour = data.driver.last_change.changed.split(" ")[1];
                     }

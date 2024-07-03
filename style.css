@@ -115,6 +115,33 @@ pre {
     font-weight: bold;
     box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.3);
 }
+.btn-confirm2 {
+    width: 362px;
+    max-width: 96vw;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    background-color: #e4d22e;
+    box-sizing: border-box;
+    font-weight: bold;
+    box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.3);
+}
+
+.btn-label {
+    width: 362px;
+    max-width: 96vw;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    background-color: #ffffff;
+    box-sizing: border-box;
+    font-weight: bold;
+    
+}
 .input-patente {
     display: inline;
     flex-basis: 49%;
