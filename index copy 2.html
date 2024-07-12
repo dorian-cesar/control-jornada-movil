@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control en ruta</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1 id="title">Reporte de conducción (5 min)</h1>
+        <div id="selveh" class="btn-label">hola</div>
+        <form id="dataForm" class="btn-container">
+            <!-- <input class="input-patente" type="text" name="patente" id="selveh" placeholder="Ingrese patente" /> -->
+
+            <button type="submit" class="btn-confirm">Cargar datos</button>
+        </form>
+        <div id="card-container" class="log-container">
+            <pre id="pre-data"></pre>
+            <pre id="toprint"></pre>
+        </div>
+        <button id="printBtn" class="btn-confirm">Imprimir</button>
+        <button id="exitBtn" class="btn-confirm2">Volver</button>
+
+        <div id="loadScreen" class="modal-bg">
+            <span>
+                <h1></h1>
+                <h3>Cargando</h3>
+            </span>
+        </div>
+
+    </div>
+    <script src="common.js"></script>
+    <script>
+        var Patente = getParameterByName('patente');
+        var conductor = getParameterByName('conductor');
+
+        function getParameterByName(name) {
+            var url = new URL(window.location.href);
+            console.log(url);
+            return url.searchParams.get(name);
+        }
+
+        function printRawBT() {
+            var preData = $("#pre-data").text();
+            if (preData) {
+                window.location='printerplus://send?text='+document.getElementById('pre-data').innerHTML;
+            } else {
+                alert("Nada que imprimir");
+                return;
+            }
+        }
+
+        function makePre(e) {
+            e.preventDefault();
+            var vehpat = Patente.toUpperCase();
+            if (!vehpat) {
+                $("#selveh").focus();
+                return;
+            }
+            // Habilitamos la pantalla de carga
+            $("#loadScreen").show();
+            $.ajax({
+                url: "https://dev.wit.la/api/gpshist/" + vehpat,
+                method: "GET",
+                dataType: "json",
+                success: function (data) {
+                    var preData = $("#pre-data");
+                    preData.text("");
+                    if (data.success == false || !data.report.sheets[0].sections[0].data) {
+                        $("#loadScreen").hide();
+                        preData.text("No se han encontrado datos...");
+                        return;
+                    }
+                    var logs = data.report.sheets[0].sections[0].data[0].rows.reverse();
+                    $("#loadScreen").hide();
+
+                    preData.append('<h3>Reporte de conducción</h3>');
+                    preData.append('<p>Últimos 5 minutos</p>');
+                    preData.append(`<p>${data.report.created}</p>`);
+                    preData.append('<hr>');
+                    preData.append(`<p>Patente:   ${data.report.sheets[0].header}</p>`);
+
+                    if (data.driver) {
+                        var nombreCond = data.driver.current.last_name + " " + data.driver.current.first_name;
+                        if (data.driver.current.middle_name) {
+                            nombreCond += " " + data.driver.current.middle_name.substring(0, 1) + ".";
+                        }
+                        if (nombreCond.length > 29) {
+                            nombreCond = nombreCond.substring(0, 29);
+                        }
+                        preData.append("Nombre : " + nombreCond);
+                        preData.append("Rut    : " + conductor);
+
+                    }
+                    preData.append(`<p>${logs[0].status.v}</p>`);
+
+                    preData.append('<hr>');
+                    preData.append('<p>Velocidad</p>');
+
+                  
+
+                    logs.forEach(function (item) {
+                        var fecha=item.date.v.split(" ")[1];
+                        var speed=item.speed.v.padStart(2, " ");
+                           preData.append(`<p>${speed} km/h , ${fecha}</p>`);
+
+
+                    });
+
+               
+                 //   preData.append('<p>                      </p>');
+                 //   preData.append('<p>______________________</p>');
+                 //   preData.append('<p>         Firma        </p>');
+                },
+                error: function () {
+                    $("#loadScreen").hide();
+                    alert("Error al cargar los datos");
+                }
+            });
+        }
+
+        if (Patente && conductor) {
+            $('#selveh').text('Bus: ' + Patente + ' - Conductor: ' + conductor);
+        }
+
+        $.ajax({
+            url: 'https://control-jornada.wit.la/backend-control-jornada/public/api/driver/name/' + conductor,
+            method: 'GET',
+            success: function (response) {
+                var nombreConductor = response.nombre;
+            },
+            error: function (xhr) {
+                if (xhr.status === 404) {
+                    alert('Rut no encontrado');
+                } else {
+                    alert('Error');
+                }
+            }
+        });
+
+        $(document).ready(function () {
+            $("#exitBtn").click(function () {
+                window.location.href = 'https://control-ruta.netlify.app/';
+            });
+
+            $("#printBtn").click(printRawBT);
+
+            $("#dataForm").submit(makePre);
+        });
+    </script>
+</body>
+
+</html>
