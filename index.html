@@ -101,19 +101,24 @@
                     preData.append('<hr>');
                     preData.append('<p>Velocidad</p>');
 
+                  
 
                     logs.forEach(function (item) {
-                        preData.append(`<p>${item.date.v.split(" ")[1]} .......... ${item.speed.v.padStart(2, " ")}Km/h</p>`);
+                        var fecha=item.date.v.split(" ")[1];
+                        var speed=item.speed.v.padStart(2, " ");
+                           preData.append(`<p>${speed} km/h , ${fecha}</p>`);
 
 
                     });
+
+               
                     preData.append('<p>                      </p>');
                     preData.append('<p>______________________</p>');
                     preData.append('<p>         Firma        </p>');
                 },
                 error: function () {
                     $("#loadScreen").hide();
-                    console.error("Error al cargar los datos");
+                    alert("Error al cargar los datos");
                 }
             });
         }
