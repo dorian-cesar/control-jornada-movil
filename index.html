@@ -65,7 +65,7 @@
             $("#loadScreen").show();
 
             $.ajax({
-                url: "https://control-jornada.wit.la/backend-control-jornada/public/api/driver/name/" + vehpat,
+                url: "https://control-jornada.wit.la/backend-control-jornada/public/api/driver/name/" + conductor,
                 method: "GET",
                 dataType: "json",
                 success: function (data) {
@@ -75,7 +75,7 @@
 
 
             $.ajax({
-                url: "https://dev.wit.la/api/gpshist/" + vehpat,
+                url: "https://control-jornada.wit.la/backend-control-jornada/public/api/gpshist/" + vehpat,
                 method: "GET",
                 dataType: "json",
                 success: function (data) {
