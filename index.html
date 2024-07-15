@@ -63,6 +63,17 @@
             }
             // Habilitamos la pantalla de carga
             $("#loadScreen").show();
+
+            $.ajax({
+                url: "https://control-jornada.wit.la/backend-control-jornada/public/api/driver/name/" + vehpat,
+                method: "GET",
+                dataType: "json",
+                success: function (data) {
+                    
+                }
+            });
+
+
             $.ajax({
                 url: "https://dev.wit.la/api/gpshist/" + vehpat,
                 method: "GET",
@@ -116,7 +127,7 @@
                    preData.append('<p>______________________</p>');
                    preData.append('<p>         Firma        </p>');
 
-                   
+
                 },
                 error: function () {
                     $("#loadScreen").hide();
